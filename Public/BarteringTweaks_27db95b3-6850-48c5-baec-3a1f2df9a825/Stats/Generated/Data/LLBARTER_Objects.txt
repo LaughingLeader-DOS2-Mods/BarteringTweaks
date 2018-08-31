@@ -1,0 +1,6 @@
+new entry "BOOK_LLBARTER_PetPalTalentBook"
+type "Object"
+using "_Skillbooks"
+data "RootTemplate" "6d71b1e0-4150-47fe-bc77-83d9b3efcb77"
+data "Act part" "0"
+data "Value" "15"

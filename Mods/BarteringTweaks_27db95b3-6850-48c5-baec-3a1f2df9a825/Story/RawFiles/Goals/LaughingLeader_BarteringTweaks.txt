@@ -474,6 +474,49 @@ THEN
 ObjectClearFlag(_Player, "LLBARTER_SneakingRemovedByScript");
 //END_REGION
 
+//REGION PET_PAL
+IF
+CharacterUsedItemTemplate(_Character, "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", _Item)
+AND
+CharacterHasTalent(_Character, "AnimalEmpathy", 0)
+AND
+ObjectGetFlag(_Character, "LLBARTER_LearnedPetPal", 0)
+AND
+GetPosition(_Character, _x, _y, _z)
+AND
+CreateItemTemplateAtPosition("LOOT_BackPack_A_6c70c298-aa29-418f-a659-f8e0b5f5fa60", _x, _y, _z, _Backpack)
+THEN
+ItemToInventory(_Item, _Backpack, 1, 0, 1);
+ItemRemove(_Backpack);
+CharacterAddTalent(_Character, "AnimalEmpathy");
+ObjectSetFlag(_Character, "LLBARTER_LearnedPetPal");
+PlayEffect(_Character, "LLBARTER_FX_PetPal_Learned_01", "Dummy_StatusFX");
+CharacterStatusText(_Character, "LLBARTER_StatusText_PetPalLearned");
+
+PROC
+ProcBlockUseOfItem((CHARACTERGUID)_Character, (ITEMGUID)_Item)
+AND
+GetTemplate(_Item, "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77")
+AND
+CharacterHasTalent(_Character, "AnimalEmpathy", 1)
+THEN
+CharacterStatusText(_Character, "LLBARTER_StatusText_PetPalAlreadyLearned");
+DB_CustomUseItemResponse(_Character, _Item, 0);
+
+//Triggered after the player respecs away their free PetPal talent point.
+PROC
+ProcBlockUseOfItem((CHARACTERGUID)_Character, (ITEMGUID)_Item)
+AND
+GetTemplate(_Item, "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77")
+AND
+CharacterHasTalent(_Character, "AnimalEmpathy", 0)
+AND
+ObjectGetFlag(_Character, "LLBARTER_LearnedPetPal", 1)
+THEN
+CharacterStatusText(_Character, "LLBARTER_StatusText_PetPalLearningFailed");
+DB_CustomUseItemResponse(_Character, _Item, 0);
+//END_REGION
+
 //REGION DEBUG
 
 IF
@@ -550,15 +593,15 @@ DebugBreak(_Str);
 IF
 DB_LLBARTER_StoryStarted(1)
 THEN
-LLBARTER_Updater_SetVersion("1.0.0.0");
+LLBARTER_Updater_SetVersion("1.0.0.7");
 
 IF
 GameStarted(_,_)
 AND
-LLBARTER_Updater_QRY_UpdateNeeded("1.0.0.0")
+LLBARTER_Updater_QRY_UpdateNeeded("1.0.0.7")
 THEN
-LLBARTER_Updater_RemoveOldVersions();
-LLBARTER_Updater_SetVersion("1.0.0.0");
+LLBARTER_Updater_RemoveOldVersions("1.0.0.7");
+LLBARTER_Updater_SetVersion("1.0.0.7");
 
 QRY
 LLBARTER_Updater_QRY_UpdateNeeded((STRING)_Version)
@@ -568,11 +611,14 @@ THEN
 DB_NOOP(1);
 
 PROC
-LLBARTER_Updater_RemoveOldVersions()
+LLBARTER_Updater_RemoveOldVersions((STRING)_NewVersion)
 AND
 DB_Mods_Registered("BarteringTweaks", "LaughingLeader", _Version)
+AND
+_Version != _NewVersion
 THEN
 NOT DB_Mods_Registered("BarteringTweaks", "LaughingLeader", _Version);
+LLBARTER_Updater_VersionChanged(_Version);
 
 PROC
 LLBARTER_Updater_SetVersion((STRING)_Version)
@@ -602,6 +648,18 @@ DB_LLBARTER_RegisteredLeaderLibSettings(1)
 THEN
 DB_LeaderLib_ModApi_RegisterActiveGoal("BarteringTweaks", "LaughingLeader", "LaughingLeader_BarteringTweaks");
 DB_LeaderLib_ModApi_RegisterMenu("LaughingLeader.BarteringTweaks", "[Bartering Tweaks] Settings", "LLBARTER_SettingsMenu", "BarteringTweaks", "LaughingLeader");
+DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4, "");
+DB_LeaderLib_Treasure_ItemMaxAmount("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4);
+
+PROC
+LLBARTER_Updater_VersionChanged((STRING)_OldVersion)
+AND
+_OldVersion == "1.0.0.0"
+AND
+NOT DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", _, _)
+THEN
+DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4, "");
+DB_LeaderLib_Treasure_ItemMaxAmount("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4);
 //END_REGION
 EXITSECTION
 
