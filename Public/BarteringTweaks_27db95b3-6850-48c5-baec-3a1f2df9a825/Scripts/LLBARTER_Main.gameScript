@@ -1,0 +1,57 @@
+INIT
+
+EVENTS
+
+EVENT LLBARTER_ApplyBarteringBonus
+VARS
+	CHARACTER:_Player
+	INT:_MaxStacks
+	INT:_CurrentStack
+ON
+	OnCharacterEvent(_Player, "LLBARTER_Commands_ApplyBarteringBonus")
+ACTIONS
+	//CharacterRemoveStatus(_Player, LLBARTER_BARTERBONUS, null, 0)
+IF "c1"
+	GetVar(_MaxStacks, _Player, "LLBARTER_BarterBonus")
+THEN
+	Set(_CurrentStack, INT:0)
+	WHILE "c1"
+		IsLessThen(_CurrentStack, _MaxStacks)
+	DO
+		CharacterApplyStatus(_Player, LLBARTER_BARTERBONUS, -1, 1, _Player)
+		Add(_CurrentStack, 1)
+	ENDWHILE
+ENDIF
+
+EVENT LLBARTER_ApplyPersuasionBonus
+VARS
+	CHARACTER:_Player
+	INT:_MaxStacks
+	INT:_CurrentStack
+ON
+	OnCharacterEvent(_Player, "LLBARTER_Commands_ApplyPersuasionBonus")
+ACTIONS
+	//CharacterRemoveStatus(_Player, LLBARTER_PERSUASIONBONUS, null, 0)
+IF "c1"
+	GetVar(_MaxStacks, _Player, "LLBARTER_PersuasionBonus")
+THEN
+	Set(_CurrentStack, INT:0)
+	WHILE "c1"
+		IsLessThen(_CurrentStack, _MaxStacks)
+	DO
+		CharacterApplyStatus(_Player, LLBARTER_PERSUASIONBONUS, -1, 1, _Player)
+		Add(_CurrentStack, 1)
+	ENDWHILE
+ENDIF
+
+EVENT LLBARTER_RemoveSneaking
+VARS
+	CHARACTER:_Player
+ON
+	OnCharacterEvent(_Player, "LLBARTER_Commands_RemoveSneaking")
+ACTIONS
+IF "c1"
+	CharacterHasStatus(_Player, SNEAKING)
+THEN
+	CharacterRemoveStatus(_Player, SNEAKING, null, 0)
+ENDIF

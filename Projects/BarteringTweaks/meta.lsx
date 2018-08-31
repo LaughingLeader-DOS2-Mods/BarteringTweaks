@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<save>
+    <header version="2" time="1535286105" />
+    <version major="3" minor="6" revision="0" build="3" />
+    <region id="MetaData">
+        <node id="root">
+            <attribute id="Module" value="27db95b3-6850-48c5-baec-3a1f2df9a825" type="23" />
+            <attribute id="Name" value="BarteringTweaks" type="23" />
+            <attribute id="Type" value="Add-on" type="23" />
+            <attribute id="UUID" value="8cd40dc7-f4a9-4f38-babf-75e820da7503" type="23" />
+        </node>
+    </region>
+</save>
