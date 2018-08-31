@@ -12,9 +12,9 @@ If [LeaderLib](https://github.com/LaughingLeader-DOS2-Mods/LeaderLib) is active,
 * When sneaking or unsneaking, chained party members sneak/unsneak as well.
 
 # Releases
+* [Github Release](https://github.com/LaughingLeader-DOS2-Mods/BarteringTweaks/releases/)
 * [Steam Workshop]()
 * [Nexus]()
-* [Github Release](/releases/latest)
 
 # Attribution
 - [Divinity: Original Sin 2](http://store.steampowered.com/app/435150/Divinity_Original_Sin_2/), a game by [Larian Studios](http://larian.com/)
