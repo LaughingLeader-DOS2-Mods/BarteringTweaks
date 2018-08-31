@@ -9,7 +9,7 @@
                 <node id="ModuleInfo">
                     <attribute id="Author" value="LaughingLeader" type="30" />
                     <attribute id="CharacterCreationLevelName" value="" type="22" />
-                    <attribute id="Description" value="The highest Bartering in the party is automatically shared when trading. Additionally, persuasion bonuses from the highest Persuasion are also shared when trading, granting the same civil ability price discount for all party members. If LeaderLib is active, a Bartering Tweaks settings menu is available from the mod menu." type="30" />
+                    <attribute id="Description" value="Shares the highest barter and persuasion bonuses among the party while trading. Additionally, BT contains additional quality-of-life tweaks, such as auto-sneaking chained party members when sneaking. If LeaderLib is active, a Bartering Tweaks settings menu is available from the mod menu." type="30" />
                     <attribute id="Folder" value="BarteringTweaks_27db95b3-6850-48c5-baec-3a1f2df9a825" type="30" />
                     <attribute id="GMTemplate" value="" type="22" />
                     <attribute id="LobbyLevelName" value="" type="22" />
