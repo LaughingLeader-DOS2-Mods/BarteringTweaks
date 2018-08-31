@@ -4,7 +4,7 @@ Bartering Tweaks for Divinity: Original Sin 2 - Definitive Edition
 Bartering Tweaks is a quality-of-life mod that shares the highest barter and persuasion bonuses among the party while trading.
 Additionally, Bartering Tweaks contains additional tweaks, such as auto-sneaking chained party members when sneaking. 
 
-**Be sure to grab the latest [LeaderLib](https://github.com/LaughingLeader-DOS2-Mods/LeaderLib/releases/tag/mod-release) release to enable the settings menu (available from the mod menu).**
+**Be sure to grab the latest [LeaderLib](https://github.com/LaughingLeader-DOS2-Mods/LeaderLib/releases/tag/mod-releases) release to enable the settings menu (available from the mod menu).**
 
 # Features:
 
