@@ -832,15 +832,15 @@ DebugBreak(_Str);
 IF
 DB_LLBARTER_StoryStarted(1)
 THEN
-LLBARTER_Updater_SetVersion("1.0.0.9");
+LLBARTER_Updater_SetVersion("1.0.1.0");
 
 IF
 GameStarted(_,_)
 AND
-LLBARTER_Updater_QRY_UpdateNeeded("1.0.0.9")
+LLBARTER_Updater_QRY_UpdateNeeded("1.0.1.0")
 THEN
-LLBARTER_Updater_RemoveOldVersions("1.0.0.9");
-LLBARTER_Updater_SetVersion("1.0.0.9");
+LLBARTER_Updater_RemoveOldVersions("1.0.1.0");
+LLBARTER_Updater_SetVersion("1.0.1.0");
 
 QRY
 LLBARTER_Updater_QRY_UpdateNeeded((STRING)_Version)
