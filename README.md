@@ -8,8 +8,9 @@ Additionally, Bartering Tweaks contains additional tweaks, such as auto-sneaking
 
 # Features:
 * The highest Bartering and Persuasion abilities in the party are shared among user-controlled characters when trading.
-* When sneaking or unsneaking, chained party members sneak/unsneak as well.
 * Attitude sharing can be enabled in the settings menu, allowing you to share your attitude bonuses when trading.
+* When sneaking or unsneaking, chained party members sneak/unsneak as well.
+* A Pet Pal Talent Book is sold at the [LeaderLib](https://github.com/LaughingLeader-DOS2-Mods/LeaderLib/releases/tag/mod-releases) trader, granting the Pet Pal talent for a small price.
 
 # Changelog
 * [Check the changelog here to see a summary of each update.](https://github.com/LaughingLeader-DOS2-Mods/BarteringTweaks/blob/master/CHANGELOG.md)
