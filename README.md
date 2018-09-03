@@ -9,11 +9,15 @@ Additionally, Bartering Tweaks contains additional tweaks, such as auto-sneaking
 # Features:
 * The highest Bartering and Persuasion abilities in the party are shared among user-controlled characters when trading.
 * When sneaking or unsneaking, chained party members sneak/unsneak as well.
+* Attitude sharing can be enabled in the settings menu, allowing you to share your attitude bonuses when trading.
+
+# Changelog
+* [Check the changelog here to see a summary of each update.](https://github.com/LaughingLeader-DOS2-Mods/BarteringTweaks/blob/master/CHANGELOG.md)
 
 # Releases
 * [Github Release](https://github.com/LaughingLeader-DOS2-Mods/BarteringTweaks/releases/)
-* [Steam Workshop]()
-* [Nexus]()
+* [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=1499450313)
+* [Nexus](https://www.nexusmods.com/divinityoriginalsin2definitiveedition/mods/8)
 
 # Support
 If you're feeling generous, an easy way to show support is by tipping me a coffee:
