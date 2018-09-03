@@ -1,7 +1,7 @@
 {
    "save" : {
       "header" : {
-         "time" : 1535661884,
+         "time" : 1535934805,
          "version" : "2.0.8.2"
       },
       "regions" : {
@@ -412,9 +412,7 @@
                                  {
                                     "flag" : [
                                        {
-                                          "name" : {"type" : 22, "value" : "LLBARTER_AttitudeSharingEnabled"},"value" : {"type" : 19, "value" : 0}},
-                                       {
-                                          "name" : {"type" : 22, "value" : "LLBARTER_PersuasionSharingDisabled"},"value" : {"type" : 19, "value" : 1}}
+                                          "name" : {"type" : 22, "value" : "LLBARTER_AttitudeSharingEnabled"},"value" : {"type" : 19, "value" : 0}}
                                     ],"type" : {"type" : 22, "value" : "Global"}},
                                  {
                                     "flag" : [
@@ -1475,7 +1473,7 @@
          },
          "editorData" : {
             "needLayout" : {"type" : 19, "value" : 0},
-            "nextNodeId" : {"type" : 5, "value" : 42}
+            "nextNodeId" : {"type" : 5, "value" : 43}
          }
       }
    }

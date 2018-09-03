@@ -247,51 +247,105 @@ THEN
 UserClearFlag(_Player, "LLBARTER_PersuasionBonusApplied", 0);
 //END_REGION
 
-//REGION ATTITUDE_BONUS_SHARING
+//REGION ATTITUDE_SHARING
 PROC
 StartTrade((CHARACTERGUID)_Player, (CHARACTERGUID)_Trader)
 AND
 GlobalGetFlag("LLBARTER_AttitudeSharingEnabled", 1)
-AND
-CharacterGetAttitudeTowardsPlayer(_Trader, _Player, _Attitude)
-AND
-DB_IsPlayer(_OtherPlayer)
-AND
-_Player != _OtherPlayer
-AND
-NOT LLBARTER_QRY_AttitudeBoostActive(_OtherPlayer)
-AND
-CharacterGetAttitudeTowardsPlayer(_Trader, _OtherPlayer, _OtherAttitude)
-AND
-_OtherAttitude > _Attitude
-AND
-IntegerSubtract(_OtherAttitude, _Attitude, _AttitudeBoost)
-AND
-_AttitudeBoost > 0
 THEN
-SetVarInteger(_Player, "LLBARTER_AttitudeBoost", _AttitudeBoost);
+LLBARTER_SetHighestAttitude(_Trader);
+DB_LLBARTER_Temp_AttitudeSharing(_Player, _Trader);
+ProcObjectTimer(_Player, "LLBARTER_Timers_SetAttitudeBoost", 250);
+
+PROC
+ProcObjectTimerFinished((CHARACTERGUID)_Player, "LLBARTER_Timers_SetAttitudeBoost")
+AND
+DB_LLBARTER_Temp_AttitudeSharing(_Player, _Trader)
+THEN
+NOT DB_LLBARTER_Temp_AttitudeSharing(_Player, _Trader);
+CharacterCharacterSetEvent(_Player, _Trader, "LLBARTER_SetAttitudeBoost");
 
 QRY
-LLBARTER_QRY_AttitudeBoostActive((CHARACTERGUID)_Player)
-AND
-ObjectGetFlag(_Player, "LLBARTER_AttitudeBoostActive", 1)
+LLBARTER_QRY_SetHighestAttitude((CHARACTERGUID)_Trader)
 THEN
-DB_NOOP(1);
+LLBARTER_SetHighestAttitude(_Trader);
 
-PROC	
-StartTrade((CHARACTERGUID)_Player, (CHARACTERGUID)_Trader)
+PROC
+LLBARTER_SetHighestAttitude((CHARACTERGUID)_Trader)
+AND
+DB_LLBARTER_Temp_HighestAttitude(_Trader, _HighestPlayer, _Attitude)
+THEN
+NOT DB_LLBARTER_Temp_HighestAttitude(_Trader, _HighestPlayer, _Attitude);
+
+PROC
+LLBARTER_SetHighestAttitude((CHARACTERGUID)_Trader)
+THEN
+DB_LLBARTER_Temp_HighestAttitude(_Trader, NULL_00000000-0000-0000-0000-000000000000, 0);
+LLBARTER_GetHighestAttitude(_Trader);
+
+PROC
+LLBARTER_GetHighestAttitude((CHARACTERGUID)_Trader)
+AND
+DB_IsPlayer(_Player)
 AND
 ObjectGetFlag(_Player, "LLBARTER_AttitudeBoostActive", 0)
 AND
-GetVarInteger(_Player, "LLBARTER_AttitudeBoost", _AttitudeBoost)
+CharacterGetAttitudeTowardsPlayer(_Trader, _Player, _Attitude)
 AND
-_AttitudeBoost > 0
+_Attitude > 0
+AND
+DB_LLBARTER_Temp_HighestAttitude(_Trader, _OtherPlayer, _HighestAttitude)
+AND
+_Attitude > _HighestAttitude
 THEN
+NOT DB_LLBARTER_Temp_HighestAttitude(_Trader, _OtherPlayer, _HighestAttitude);
+DB_LLBARTER_Temp_HighestAttitude(_Trader, _Player, _Attitude);
+
+IF
+CharacterCharacterEvent(_Player, _Trader, "LLBARTER_SetAttitudeBoost")
+AND
+DB_LLBARTER_Temp_HighestAttitude(_Trader, _HighestPlayer, _Attitude)
+AND
+_Attitude > 0
+AND
+CharacterGetReservedUserID(_Player, _UserID)
+THEN
+LLBARTER_ApplyAttitudeBonusToUser(_Trader, _UserID, _Attitude);
+UserSetFlag(_Player, "LLBARTER_AttitudeBonusApplied");
+NOT DB_LLBARTER_Temp_HighestAttitude(_Trader, _HighestPlayer, _Attitude);
+
+PROC
+LLBARTER_ApplyAttitudeBonusToUser((CHARACTERGUID)_Trader, (INTEGER)_UserID, (INTEGER)_TargetVal)
+AND
+DB_IsPlayer(_Player)
+AND
+CharacterGetReservedUserID(_Player, _UserID)
+THEN
+LLBARTER_ApplyAttitudeBonus(_Trader, _Player, _TargetVal);
+
+PROC
+LLBARTER_ApplyAttitudeBonus((CHARACTERGUID)_Trader, (CHARACTERGUID)_Player, (INTEGER)_TargetVal)
+AND
+CharacterGetAttitudeTowardsPlayer(_Trader, _Player, _CurrentVal)
+AND
+_TargetVal > _CurrentVal
+AND
+_TargetVal > 0
+AND
+IntegerSubtract(_TargetVal, _CurrentVal, _AttitudeBoost)
+THEN
+SetVarInteger(_Player, "LLBARTER_AttitudeBoost", _AttitudeBoost);
 CharacterAddAttitudeTowardsPlayer(_Trader, _Player, _AttitudeBoost);
 ObjectSetFlag(_Player, "LLBARTER_AttitudeBoostActive");
 
 IF
-TradeEnds(_Player, _Trader)
+TradeEnds(_TradingPlayer, _Trader)
+AND
+CharacterGetReservedUserID(_TradingPlayer, _UserID)
+AND
+DB_IsPlayer(_Player)
+AND
+CharacterGetReservedUserID(_Player, _UserID)
 AND
 ObjectGetFlag(_Player, "LLBARTER_AttitudeBoostActive", 1)
 AND
@@ -304,16 +358,8 @@ AND
 _AttitudeBoost > 0
 AND
 IntegerProduct(_AttitudeBoost, -1, _RemoveAttitude)
-//IntegerSubtract(_Attitude, _AttitudeBoost, _RemoveAttitude)
 THEN
 CharacterAddAttitudeTowardsPlayer(_Trader, _Player, _RemoveAttitude);
-//ChangeAttitude(_Trader, _Player, _RemoveAttitude);
-
-IF
-TradeEnds(_Player, _Trader)
-AND
-ObjectGetFlag(_Player, "LLBARTER_AttitudeBoostActive", 1)
-THEN
 ObjectClearFlag(_Player, "LLBARTER_AttitudeBoostActive");
 SetVarInteger(_Player, "LLBARTER_AttitudeBoost", 0);
 //END_REGION
@@ -593,15 +639,15 @@ DebugBreak(_Str);
 IF
 DB_LLBARTER_StoryStarted(1)
 THEN
-LLBARTER_Updater_SetVersion("1.0.0.7");
+LLBARTER_Updater_SetVersion("1.0.0.8");
 
 IF
 GameStarted(_,_)
 AND
-LLBARTER_Updater_QRY_UpdateNeeded("1.0.0.7")
+LLBARTER_Updater_QRY_UpdateNeeded("1.0.0.8")
 THEN
-LLBARTER_Updater_RemoveOldVersions("1.0.0.7");
-LLBARTER_Updater_SetVersion("1.0.0.7");
+LLBARTER_Updater_RemoveOldVersions("1.0.0.8");
+LLBARTER_Updater_SetVersion("1.0.0.8");
 
 QRY
 LLBARTER_Updater_QRY_UpdateNeeded((STRING)_Version)
