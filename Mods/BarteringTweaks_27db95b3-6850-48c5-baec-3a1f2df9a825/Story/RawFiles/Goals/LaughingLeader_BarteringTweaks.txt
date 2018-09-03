@@ -36,6 +36,15 @@ AND
 HasAppliedStatus(_Player, _Status, 1)
 THEN
 DB_NOOP(1);
+
+QRY
+LLBARTER_QRY_UserCharacterInDialog((INTEGER)_UserID)
+AND
+DB_DialogPlayers(_, _Player, _)
+AND
+CharacterGetReservedUserID((CHARACTERGUID)_Player, _UserID)
+THEN
+DB_NOOP(1);
 //END_REGION
 
 //REGION BARTER_SHARING
@@ -63,7 +72,6 @@ AND
 CharacterGetReservedUserID(_Player, _UserID)
 THEN
 LLBARTER_ApplyBarterBonusToUser(_UserID, _Bonus);
-UserSetFlag(_Player, "LLBARTER_BarterBonusApplied", 0);
 
 QRY
 LLBARTER_QRY_SetHighestBarter()
@@ -103,6 +111,8 @@ AND
 DB_IsPlayer(_Player)
 AND
 CharacterGetReservedUserID(_Player, _UserID)
+AND
+ObjectGetFlag(_Player, "LLBARTER_BarterBonusApplied", 0)
 THEN
 LLBARTER_ApplyBarterBonus(_Player, _TargetVal);
 
@@ -119,6 +129,8 @@ IntegerSubtract(_TargetVal, _CurrentVal, _BonusVal)
 AND
 _BonusVal > 0
 THEN
+ObjectSetFlag(_Player, "LLBARTER_BarterBonusApplied");
+UserSetFlag(_Player, "LLBARTER_BarterBonusActive", 0);
 SetVarInteger(_Player, "LLBARTER_BarterBonus", _BonusVal);
 SetStoryEvent(_Player, "LLBARTER_Commands_ApplyBarteringBonus");
 
@@ -127,13 +139,21 @@ DialogEnded(_Dialog, _Instance)
 AND
 DialogGetInvolvedPlayer(_Instance, 1, (CHARACTERGUID)_Player)
 AND
-UserGetFlag(_Player, "LLBARTER_BarterBonusApplied", 1)
+UserGetFlag(_Player, "LLBARTER_BarterBonusActive", 1)
 THEN
-ProcObjectTimer(_Player, "LLBARTER_RemoveBarterBonusFromUserCharaters", 250);
-UserClearFlag(_Player, "LLBARTER_BarterBonusApplied", 0);
+ProcObjectTimer(_Player, "LLBARTER_RemoveBarterBonusFromUserCharacters", 250);
+
+IF
+DialogEnded(_Dialog, _Instance)
+AND
+DialogGetInvolvedPlayer(_Instance, 1, (CHARACTERGUID)_Player)
+AND
+ObjectGetFlag(_Player, "LLBARTER_BarterBonusApplied", 1)
+THEN
+LLBARTER_RemoveBarteringBonusesFromPlayer(_Player);
 
 PROC
-ProcObjectTimerFinished((CHARACTERGUID)_UserPlayer, "LLBARTER_RemoveBarterBonusFromUserCharaters")
+ProcObjectTimerFinished((CHARACTERGUID)_UserPlayer, "LLBARTER_RemoveBarterBonusFromUserCharacters")
 AND
 CharacterGetReservedUserID(_UserPlayer, _UserID)
 AND
@@ -146,6 +166,29 @@ AND
 LLBARTER_QRY_HasStatus(_Player, "LLBARTER_BARTERBONUS")
 THEN
 RemoveStatus(_Player, "LLBARTER_BARTERBONUS");
+
+PROC
+ProcObjectTimerFinished((CHARACTERGUID)_UserPlayer, "LLBARTER_RemoveBarterBonusFromUserCharacters")
+AND
+CharacterGetReservedUserID(_UserPlayer, _UserID)
+AND
+NOT LLBARTER_QRY_UserCharacterInDialog(_UserID)
+THEN
+UserClearFlag(_UserPlayer, "LLBARTER_BarterBonusActive", 0);
+
+PROC
+LLBARTER_RemoveBarteringBonusesFromPlayer((CHARACTERGUID)_Player)
+AND
+LLBARTER_QRY_HasStatus(_Player, "LLBARTER_BARTERBONUS")
+THEN
+RemoveStatus(_Player, "LLBARTER_BARTERBONUS");
+
+PROC
+LLBARTER_RemoveBarteringBonusesFromPlayer((CHARACTERGUID)_Player)
+AND
+ObjectGetFlag(_Player, "LLBARTER_BarterBonusApplied", 1)
+THEN
+ObjectClearFlag(_Player, "LLBARTER_BarterBonusApplied");
 //END_REGION
 
 //REGION PERSUASION_SHARING
@@ -153,6 +196,20 @@ PROC
 StartTrade((CHARACTERGUID)_Player, (CHARACTERGUID)_Trader)
 AND
 NOT GlobalGetFlag("LLBARTER_PersuasionSharingDisabled", 1)
+AND
+NOT GlobalGetFlag("LLBARTER_PersuasionDialogSharingEnabled", 1)
+THEN
+LLBARTER_SetHighestPersuasion();
+ProcObjectTimer(_Player, "LLBARTER_SetPersuasionBoost", 250);
+
+IF
+DialogStarted(_Dialog, _Instance)
+AND
+GlobalGetFlag("LLBARTER_PersuasionDialogSharingEnabled", 1)
+AND
+DialogGetInvolvedPlayer(_Instance, 1, (CHARACTERGUID)_Player)
+AND
+DB_IsPlayer(_Player)
 THEN
 LLBARTER_SetHighestPersuasion();
 ProcObjectTimer(_Player, "LLBARTER_SetPersuasionBoost", 250);
@@ -206,6 +263,8 @@ LLBARTER_ApplyPersuasionBonusToUser((INTEGER)_UserID, (INTEGER)_TargetVal)
 AND
 DB_IsPlayer(_Player)
 AND
+NOT ObjectGetFlag(_Player, "LLBARTER_PersuasionBoostActive", 1)
+AND
 CharacterGetReservedUserID(_Player, _UserID)
 THEN
 LLBARTER_ApplyPersuasionBonus(_Player, _TargetVal);
@@ -223,9 +282,27 @@ IntegerSubtract(_TargetVal, _CurrentVal, _BonusVal)
 THEN
 SetVarInteger(_Player, "LLBARTER_PersuasionBonus", _BonusVal);
 SetStoryEvent(_Player, "LLBARTER_Commands_ApplyPersuasionBonus");
+ObjectSetFlag(_Player, "LLBARTER_PersuasionBoostActive");
 
 IF
 TradeEnds(_UserPlayer, _Trader)
+AND
+NOT GlobalGetFlag("LLBARTER_PersuasionDialogSharingEnabled", 1)
+THEN
+LLBARTER_RemovePersuasionBonuses(_UserPlayer);
+
+IF
+DialogEnded(_Dialog, _Instance)
+AND
+GlobalGetFlag("LLBARTER_PersuasionDialogSharingEnabled", 1)
+AND
+DialogGetInvolvedPlayer(_Instance, 1, (CHARACTERGUID)_UserPlayer)
+THEN
+LLBARTER_RemovePersuasionBonuses(_UserPlayer);
+LLBARTER_RemovePersuasionBonusFromPlayer(_UserPlayer);
+
+PROC
+LLBARTER_RemovePersuasionBonuses((CHARACTERGUID)_UserPlayer)
 AND
 UserGetFlag(_UserPlayer, "LLBARTER_PersuasionBonusApplied", 1)
 AND
@@ -235,16 +312,34 @@ DB_IsPlayer(_Player)
 AND
 CharacterGetReservedUserID(_Player, _UserID)
 AND
+NOT DB_DialogPlayers(_, _Player, _)
+AND
 LLBARTER_QRY_HasStatus(_Player, "LLBARTER_PERSUASIONBONUS")
 THEN
 RemoveStatus(_Player, "LLBARTER_PERSUASIONBONUS");
+ObjectClearFlag(_Player, "LLBARTER_PersuasionBoostActive");
 
-IF
-TradeEnds(_Player, _Trader)
+PROC
+LLBARTER_RemovePersuasionBonuses((CHARACTERGUID)_Player)
 AND
 UserGetFlag(_Player, "LLBARTER_PersuasionBonusApplied", 1)
 THEN
 UserClearFlag(_Player, "LLBARTER_PersuasionBonusApplied", 0);
+
+//Dialog only
+PROC
+LLBARTER_RemovePersuasionBonusFromPlayer((CHARACTERGUID)_Player)
+AND
+LLBARTER_QRY_HasStatus(_Player, "LLBARTER_PERSUASIONBONUS")
+THEN
+RemoveStatus(_Player, "LLBARTER_PERSUASIONBONUS");
+
+PROC
+LLBARTER_RemovePersuasionBonusFromPlayer((CHARACTERGUID)_Player)
+AND
+ObjectGetFlag(_Player, "LLBARTER_PersuasionBoostActive", 1)
+THEN
+ObjectClearFlag(_Player, "LLBARTER_PersuasionBoostActive");
 //END_REGION
 
 //REGION ATTITUDE_SHARING
@@ -334,7 +429,7 @@ _TargetVal > 0
 AND
 IntegerSubtract(_TargetVal, _CurrentVal, _AttitudeBoost)
 THEN
-SetVarInteger(_Player, "LLBARTER_AttitudeBoost", _AttitudeBoost);
+DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost);
 CharacterAddAttitudeTowardsPlayer(_Trader, _Player, _AttitudeBoost);
 ObjectSetFlag(_Player, "LLBARTER_AttitudeBoostActive");
 
@@ -353,7 +448,7 @@ CharacterGetAttitudeTowardsPlayer(_Trader, _Player, _Attitude)
 AND
 _Attitude > 0
 AND
-GetVarInteger(_Player, "LLBARTER_AttitudeBoost", _AttitudeBoost)
+DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost)
 AND
 _AttitudeBoost > 0
 AND
@@ -361,7 +456,29 @@ IntegerProduct(_AttitudeBoost, -1, _RemoveAttitude)
 THEN
 CharacterAddAttitudeTowardsPlayer(_Trader, _Player, _RemoveAttitude);
 ObjectClearFlag(_Player, "LLBARTER_AttitudeBoostActive");
-SetVarInteger(_Player, "LLBARTER_AttitudeBoost", 0);
+NOT DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost);
+
+PROC
+LLBARTER_RemoveAttitudeBonusesFromPlayer((CHARACTERGUID)_Player)
+AND
+ObjectGetFlag(_Player, "LLBARTER_AttitudeBoostActive", 1)
+AND
+DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost)
+AND
+_AttitudeBoost > 0
+AND
+IntegerProduct(_AttitudeBoost, -1, _RemoveAttitude)
+THEN
+CharacterAddAttitudeTowardsPlayer(_Trader, _Player, _RemoveAttitude);
+ObjectClearFlag(_Player, "LLBARTER_AttitudeBoostActive");
+NOT DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost);
+
+PROC
+LLBARTER_RemoveAttitudeBonusesFromPlayer((CHARACTERGUID)_Player)
+AND
+DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost)
+THEN
+NOT DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost);
 //END_REGION
 
 //REGION SNEAK_TWEAKS
@@ -563,6 +680,33 @@ CharacterStatusText(_Character, "LLBARTER_StatusText_PetPalLearningFailed");
 DB_CustomUseItemResponse(_Character, _Item, 0);
 //END_REGION
 
+//REGION DIALOG_MENU
+//Dialog update
+PROC
+LLBARTER_Updater_VersionChanged((STRING)_OldVersion, (STRING)_NewVersion)
+AND
+_OldVersion == "1.0.0.8"
+AND
+DB_DialogName("LLBARTER_SettingsMenu", _Inst)
+AND
+DB_DialogPlayers(_Inst,_Player,_)
+THEN
+DialogRequestStopForDialog("LLBARTER_SettingsMenu", _Player);
+
+IF
+GlobalFlagSet("LLBARTER_Commands_ClearBonuses")
+THEN
+GlobalClearFlag("LLBARTER_Commands_ClearBonuses");
+IterateParties("LLBARTER_Debug_RemoveAllBonuses");
+
+IF
+StoryEvent((CHARACTERGUID)_Player, "LLBARTER_Debug_RemoveAllBonuses")
+THEN
+LLBARTER_RemovePersuasionBonusFromPlayer(_Player);
+LLBARTER_RemoveAttitudeBonusesFromPlayer(_Player);
+LLBARTER_RemoveBarteringBonusesFromPlayer(_Player);
+//END_REGION
+
 //REGION DEBUG
 
 IF
@@ -571,6 +715,26 @@ AND
 NOT DB_Origins(_)
 THEN
 DB_Origins((CHARACTERGUID)S_GLO_CharacterCreationDummy_001_da072fe7-fdd5-42ae-9139-8bd4b9fca406);
+
+IF
+TextEventSet("llbarter_settings")
+AND
+CharacterGetHostCharacter(_Player)
+THEN
+UserSetFlag(_Player, "LeaderLib_IsHost", 0);
+Proc_StartDialog(0, "LLBARTER_SettingsMenu", _Player, _Player);
+
+IF
+TextEventSet("llbarter_addplayers")
+THEN
+IterateParties("LLBARTER_Debug_OnIterate_AddToPlayerDB");
+
+IF
+StoryEvent((CHARACTERGUID)_Player, "LLBARTER_Debug_OnIterate_AddToPlayerDB")
+AND
+NOT DB_IsPlayer(_Player)
+THEN
+DB_IsPlayer(_Player);
 
 /*
 IF
@@ -639,15 +803,15 @@ DebugBreak(_Str);
 IF
 DB_LLBARTER_StoryStarted(1)
 THEN
-LLBARTER_Updater_SetVersion("1.0.0.8");
+LLBARTER_Updater_SetVersion("1.0.0.9");
 
 IF
 GameStarted(_,_)
 AND
-LLBARTER_Updater_QRY_UpdateNeeded("1.0.0.8")
+LLBARTER_Updater_QRY_UpdateNeeded("1.0.0.9")
 THEN
-LLBARTER_Updater_RemoveOldVersions("1.0.0.8");
-LLBARTER_Updater_SetVersion("1.0.0.8");
+LLBARTER_Updater_RemoveOldVersions("1.0.0.9");
+LLBARTER_Updater_SetVersion("1.0.0.9");
 
 QRY
 LLBARTER_Updater_QRY_UpdateNeeded((STRING)_Version)
@@ -664,7 +828,7 @@ AND
 _Version != _NewVersion
 THEN
 NOT DB_Mods_Registered("BarteringTweaks", "LaughingLeader", _Version);
-LLBARTER_Updater_VersionChanged(_Version);
+LLBARTER_Updater_VersionChanged(_Version, _NewVersion);
 
 PROC
 LLBARTER_Updater_SetVersion((STRING)_Version)
@@ -698,7 +862,7 @@ DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "
 DB_LeaderLib_Treasure_ItemMaxAmount("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4);
 
 PROC
-LLBARTER_Updater_VersionChanged((STRING)_OldVersion)
+LLBARTER_Updater_VersionChanged((STRING)_OldVersion, (STRING)_NewVersion)
 AND
 _OldVersion == "1.0.0.0"
 AND
