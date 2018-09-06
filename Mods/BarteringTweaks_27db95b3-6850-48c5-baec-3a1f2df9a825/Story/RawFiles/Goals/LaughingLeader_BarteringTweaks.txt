@@ -62,6 +62,13 @@ THEN
 LLBARTER_SetHighestBarter();
 ProcObjectTimer(_Player, "LLBARTER_SetBarterBoost", 250);
 
+IF
+GlobalFlagSet("LLBARTER_BarterSharingDisabled")
+AND
+DB_IsPlayer(_Player)
+THEN
+LLBARTER_RemoveBarteringBonusesFromPlayer(_Player);
+
 PROC
 ProcObjectTimerFinished((CHARACTERGUID)_Player, "LLBARTER_SetBarterBoost")
 AND
@@ -152,6 +159,7 @@ ObjectGetFlag(_Player, "LLBARTER_BarterBonusApplied", 1)
 THEN
 LLBARTER_RemoveBarteringBonusesFromPlayer(_Player);
 
+//No dialog checks here, since you can't be in two trade menus with multiple characters you own
 PROC
 ProcObjectTimerFinished((CHARACTERGUID)_UserPlayer, "LLBARTER_RemoveBarterBonusFromUserCharacters")
 AND
@@ -160,8 +168,6 @@ AND
 DB_IsPlayer(_Player)
 AND
 CharacterGetReservedUserID(_Player, _UserID)
-AND
-NOT DB_DialogPlayers(_, _Player, _)
 AND
 LLBARTER_QRY_HasStatus(_Player, "LLBARTER_BARTERBONUS")
 THEN
@@ -299,34 +305,37 @@ THEN
 LLBARTER_RemovePersuasionBonuses(_Player);
 
 IF
-DialogEnded(_Dialog, _Instance)
+GlobalFlagCleared("LLBARTER_PersuasionDialogSharingEnabled")
 AND
-GlobalGetFlag("LLBARTER_PersuasionDialogSharingEnabled", 1)
-AND
-DialogGetInvolvedPlayer(_Instance, 1, (CHARACTERGUID)_Player)
+DB_IsPlayer(_Player)
 THEN
-LLBARTER_RemovePersuasionBonuses(_Player);
+LLBARTER_RemovePersuasionBonusFromPlayer(_Player);
+
+IF
+CharacterStatusRemoved(_Player, "LLBARTER_PERSUASIONBONUS", _)
+THEN
 ObjectClearFlag(_Player, "LLBARTER_PersuasionBoostActive");
 
 IF
 DialogEnded(_Dialog, _Instance)
 AND
-GlobalGetFlag("LLBARTER_PersuasionDialogSharingEnabled", 1)
-AND
 DialogGetInvolvedPlayer(_Instance, 1, (CHARACTERGUID)_Player)
 AND
 UserGetFlag(_Player, "LLBARTER_PersuasionBonusApplied", 1)
-AND
-CharacterGetReservedUserID(_Player, _UserID)
-AND
-NOT LLBARTER_QRY_UserCharactersInDialog(_UserID)
 THEN
-UserClearFlag(_Player, "LLBARTER_PersuasionBonusApplied", 0);
+LLBARTER_RemovePersuasionBonuses(_Player);
+
+IF
+DialogEnded(_Dialog, _Instance)
+AND
+DialogGetInvolvedPlayer(_Instance, 1, (CHARACTERGUID)_Player)
+AND
+LLBARTER_QRY_HasStatus(_Player, "LLBARTER_PERSUASIONBONUS")
+THEN
+RemoveStatus(_Player, "LLBARTER_PERSUASIONBONUS");
 
 PROC
 LLBARTER_RemovePersuasionBonuses((CHARACTERGUID)_UserPlayer)
-AND
-UserGetFlag(_UserPlayer, "LLBARTER_PersuasionBonusApplied", 1)
 AND
 CharacterGetReservedUserID(_UserPlayer, _UserID)
 AND
@@ -339,9 +348,18 @@ AND
 LLBARTER_QRY_HasStatus(_Player, "LLBARTER_PERSUASIONBONUS")
 THEN
 RemoveStatus(_Player, "LLBARTER_PERSUASIONBONUS");
-ObjectClearFlag(_Player, "LLBARTER_PersuasionBoostActive");
 
-//Dialog only
+PROC
+LLBARTER_RemovePersuasionBonuses((CHARACTERGUID)_UserPlayer)
+AND
+UserGetFlag(_UserPlayer, "LLBARTER_PersuasionBonusApplied", 1)
+AND
+CharacterGetReservedUserID(_UserPlayer, _UserID)
+AND
+NOT LLBARTER_QRY_UserCharactersInDialog(_UserID)
+THEN
+UserClearFlag(_UserPlayer, "LLBARTER_PersuasionBonusApplied", 0);
+
 PROC
 LLBARTER_RemovePersuasionBonusFromPlayer((CHARACTERGUID)_Player)
 AND
@@ -832,15 +850,15 @@ DebugBreak(_Str);
 IF
 DB_LLBARTER_StoryStarted(1)
 THEN
-LLBARTER_Updater_SetVersion("1.0.1.0");
+LLBARTER_Updater_SetVersion("1.0.1.1");
 
 IF
 GameStarted(_,_)
 AND
-LLBARTER_Updater_QRY_UpdateNeeded("1.0.1.0")
+LLBARTER_Updater_QRY_UpdateNeeded("1.0.1.1")
 THEN
-LLBARTER_Updater_RemoveOldVersions("1.0.1.0");
-LLBARTER_Updater_SetVersion("1.0.1.0");
+LLBARTER_Updater_RemoveOldVersions("1.0.1.1");
+LLBARTER_Updater_SetVersion("1.0.1.1");
 
 QRY
 LLBARTER_Updater_QRY_UpdateNeeded((STRING)_Version)
@@ -899,6 +917,22 @@ NOT DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks
 THEN
 DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4, "");
 DB_LeaderLib_Treasure_ItemMaxAmount("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4);
+
+//Dialog exiting bug
+PROC
+LLBARTER_Updater_VersionChanged((STRING)_OldVersion, (STRING)_NewVersion)
+AND
+_OldVersion == "1.0.1.0"
+AND
+DB_IsPlayer(_Player)
+AND
+LLBARTER_QRY_HasStatus(_Player, "LLBARTER_PERSUASIONBONUS")
+AND
+NOT DB_DialogPlayers(_, _Player, _)
+AND
+NOT DB_DialogNPCs(_, _Player, _)
+THEN
+RemoveStatus(_Player, "LLBARTER_PERSUASIONBONUS");
 //END_REGION
 EXITSECTION
 
