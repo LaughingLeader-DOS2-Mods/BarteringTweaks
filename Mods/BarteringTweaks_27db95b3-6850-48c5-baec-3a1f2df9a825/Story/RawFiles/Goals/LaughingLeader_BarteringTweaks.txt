@@ -48,6 +48,14 @@ DB_NOOP(1);
 //END_REGION
 
 //REGION BARTER_SHARING
+PROC
+StartTrade((CHARACTERGUID)_Player, (CHARACTERGUID)_Trader)
+AND
+NOT GlobalGetFlag("LLBARTER_BarterSharingDisabled", 1)
+THEN
+LLBARTER_SetHighestBarter();
+ProcObjectTimer(_Player, "LLBARTER_SetBarterBoost", 250);
+
 IF
 DialogStarted(_Dialog, _Instance)
 AND
@@ -119,7 +127,8 @@ DB_IsPlayer(_Player)
 AND
 CharacterGetReservedUserID(_Player, _UserID)
 AND
-ObjectGetFlag(_Player, "LLBARTER_BarterBonusApplied", 0)
+//ObjectGetFlag(_Player, "LLBARTER_BarterBonusApplied", 0)
+NOT LLBARTER_QRY_HasStatus(_Player, "LLBARTER_BARTERBONUS")
 THEN
 LLBARTER_ApplyBarterBonus(_Player, _TargetVal);
 
@@ -136,7 +145,7 @@ IntegerSubtract(_TargetVal, _CurrentVal, _BonusVal)
 AND
 _BonusVal > 0
 THEN
-ObjectSetFlag(_Player, "LLBARTER_BarterBonusApplied");
+//ObjectSetFlag(_Player, "LLBARTER_BarterBonusApplied", 0);
 UserSetFlag(_Player, "LLBARTER_BarterBonusActive", 0);
 SetVarInteger(_Player, "LLBARTER_BarterBonus", _BonusVal);
 SetStoryEvent(_Player, "LLBARTER_Commands_ApplyBarteringBonus");
@@ -155,11 +164,10 @@ DialogEnded(_Dialog, _Instance)
 AND
 DialogGetInvolvedPlayer(_Instance, 1, (CHARACTERGUID)_Player)
 AND
-ObjectGetFlag(_Player, "LLBARTER_BarterBonusApplied", 1)
+LLBARTER_QRY_HasStatus(_Player, "LLBARTER_BARTERBONUS")
 THEN
 LLBARTER_RemoveBarteringBonusesFromPlayer(_Player);
 
-//No dialog checks here, since you can't be in two trade menus with multiple characters you own
 PROC
 ProcObjectTimerFinished((CHARACTERGUID)_UserPlayer, "LLBARTER_RemoveBarterBonusFromUserCharacters")
 AND
@@ -168,6 +176,8 @@ AND
 DB_IsPlayer(_Player)
 AND
 CharacterGetReservedUserID(_Player, _UserID)
+AND
+NOT DB_DialogPlayers(_, _Player, _)
 AND
 LLBARTER_QRY_HasStatus(_Player, "LLBARTER_BARTERBONUS")
 THEN
@@ -194,7 +204,7 @@ LLBARTER_RemoveBarteringBonusesFromPlayer((CHARACTERGUID)_Player)
 AND
 ObjectGetFlag(_Player, "LLBARTER_BarterBonusApplied", 1)
 THEN
-ObjectClearFlag(_Player, "LLBARTER_BarterBonusApplied");
+ObjectClearFlag(_Player, "LLBARTER_BarterBonusApplied", 0);
 
 PROC
 LLBARTER_RemoveBarteringBonusesFromPlayer((CHARACTERGUID)_Player)
@@ -276,7 +286,7 @@ LLBARTER_ApplyPersuasionBonusToUser((INTEGER)_UserID, (INTEGER)_TargetVal)
 AND
 DB_IsPlayer(_Player)
 AND
-NOT ObjectGetFlag(_Player, "LLBARTER_PersuasionBoostActive", 1)
+NOT LLBARTER_QRY_HasStatus(_Player, "LLBARTER_PERSUASIONBONUS")
 AND
 CharacterGetReservedUserID(_Player, _UserID)
 THEN
@@ -295,7 +305,7 @@ IntegerSubtract(_TargetVal, _CurrentVal, _BonusVal)
 THEN
 SetVarInteger(_Player, "LLBARTER_PersuasionBonus", _BonusVal);
 SetStoryEvent(_Player, "LLBARTER_Commands_ApplyPersuasionBonus");
-ObjectSetFlag(_Player, "LLBARTER_PersuasionBoostActive");
+//ObjectSetFlag(_Player, "LLBARTER_PersuasionBoostActive");
 
 IF
 TradeEnds(_Player, _Trader)
