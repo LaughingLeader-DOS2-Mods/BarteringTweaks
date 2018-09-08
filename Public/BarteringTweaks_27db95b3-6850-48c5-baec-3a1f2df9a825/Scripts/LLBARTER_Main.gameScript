@@ -21,6 +21,7 @@ THEN
 		CharacterApplyStatus(_Player, LLBARTER_BARTERBONUS, -1, 1, _Player)
 		Add(_CurrentStack, 1)
 	ENDWHILE
+	CharacterEvent(_Player, "LLBARTER_Events_BarterBonusApplied")
 ENDIF
 
 EVENT LLBARTER_ApplyPersuasionBonus
@@ -42,6 +43,7 @@ THEN
 		CharacterApplyStatus(_Player, LLBARTER_PERSUASIONBONUS, -1, 1, _Player)
 		Add(_CurrentStack, 1)
 	ENDWHILE
+	CharacterEvent(_Player, "LLBARTER_Events_PersuasionBonusApplied")
 ENDIF
 
 EVENT LLBARTER_RemoveSneaking

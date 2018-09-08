@@ -305,7 +305,7 @@ IntegerSubtract(_TargetVal, _CurrentVal, _BonusVal)
 THEN
 SetVarInteger(_Player, "LLBARTER_PersuasionBonus", _BonusVal);
 SetStoryEvent(_Player, "LLBARTER_Commands_ApplyPersuasionBonus");
-//ObjectSetFlag(_Player, "LLBARTER_PersuasionBoostActive");
+ObjectSetFlag(_Player, "LLBARTER_PersuasionBoostActive", 0);
 
 IF
 TradeEnds(_Player, _Trader)
@@ -358,6 +358,7 @@ AND
 LLBARTER_QRY_HasStatus(_Player, "LLBARTER_PERSUASIONBONUS")
 THEN
 RemoveStatus(_Player, "LLBARTER_PERSUASIONBONUS");
+ObjectClearFlag(_Player, "LLBARTER_PersuasionBoostActive", 0);
 
 PROC
 LLBARTER_RemovePersuasionBonuses((CHARACTERGUID)_UserPlayer)
@@ -393,6 +394,20 @@ UserClearFlag(_Player, "LLBARTER_PersuasionBonusApplied", 0);
 //END_REGION
 
 //REGION ATTITUDE_SHARING
+QRY
+LLBARTER_QRY_PersuasionSharingEnabled()
+AND
+GlobalGetFlag("LLBARTER_PersuasionDialogSharingEnabled", 1)
+THEN
+DB_NOOP(1);
+
+QRY
+LLBARTER_QRY_PersuasionSharingEnabled()
+AND
+GlobalGetFlag("LLBARTER_PersuasionDialogSharingEnabled", 1)
+THEN
+DB_NOOP(1);
+
 PROC
 StartTrade((CHARACTERGUID)_Player, (CHARACTERGUID)_Trader)
 AND
@@ -401,6 +416,8 @@ THEN
 LLBARTER_SetHighestAttitude(_Trader);
 DB_LLBARTER_Temp_AttitudeSharing(_Player, _Trader);
 ProcObjectTimer(_Player, "LLBARTER_Timers_SetAttitudeBoost", 250);
+
+//StoryEvent((CHARACTERGUID)_Player, "LLBARTER_Events_PersuasionBonusApplied")
 
 PROC
 ProcObjectTimerFinished((CHARACTERGUID)_Player, "LLBARTER_Timers_SetAttitudeBoost")
@@ -471,17 +488,27 @@ LLBARTER_ApplyAttitudeBonus(_Trader, _Player, _TargetVal);
 PROC
 LLBARTER_ApplyAttitudeBonus((CHARACTERGUID)_Trader, (CHARACTERGUID)_Player, (INTEGER)_TargetVal)
 AND
-CharacterGetAttitudeTowardsPlayer(_Trader, _Player, _CurrentVal)
+CharacterGetAttitudeTowardsPlayer(_Trader, _Player, _StartingVal)
 AND
-_TargetVal > _CurrentVal
+_TargetVal > _StartingVal
 AND
 _TargetVal > 0
 AND
-IntegerSubtract(_TargetVal, _CurrentVal, _AttitudeBoost)
+IntegerSubtract(_TargetVal, _StartingVal, _AttitudeBoost)
 THEN
-DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost);
+DB_LLBARTER_Temp_TargetAttitude(_Trader, _Player, _StartingVal);
 CharacterAddAttitudeTowardsPlayer(_Trader, _Player, _AttitudeBoost);
-ObjectSetFlag(_Player, "LLBARTER_AttitudeBoostActive");
+ObjectSetFlag(_Player, "LLBARTER_AttitudeBoostActive", 0);
+
+IF
+CharacterAttitudeTowardsPlayerChanged((CHARACTERGUID)_Trader, (CHARACTERGUID)_Player, (INTEGER)_NewAttitude)
+AND
+DB_LLBARTER_Temp_TargetAttitude(_Trader, _Player, _StartingVal)
+AND
+IntegerSubtract(_NewAttitude, _StartingVal, _AttitudeBoost)
+THEN
+NOT DB_LLBARTER_Temp_TargetAttitude(_Trader, _Player, _StartingVal);
+DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost);
 
 IF
 TradeEnds(_TradingPlayer, _Trader)
@@ -494,19 +521,45 @@ CharacterGetReservedUserID(_Player, _UserID)
 AND
 ObjectGetFlag(_Player, "LLBARTER_AttitudeBoostActive", 1)
 AND
-CharacterGetAttitudeTowardsPlayer(_Trader, _Player, _Attitude)
-AND
-_Attitude > 0
-AND
 DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost)
 AND
-_AttitudeBoost > 0
+LLBARTER_QRY_GetPersuasionOffset(_Player)
 AND
-IntegerProduct(_AttitudeBoost, -1, _RemoveAttitude)
+DB_LLBARTER_Temp_PersuasionOffset(_Player, _PersuasionAttitudeBonus)
+AND
+IntegerSum(_AttitudeBoost, _PersuasionAttitudeBonus, _TotalAttitudeToRemove)
+AND
+IntegerProduct(_TotalAttitudeToRemove, -1, _RemoveAttitude)
 THEN
-CharacterAddAttitudeTowardsPlayer(_Trader, _Player, _RemoveAttitude);
-ObjectClearFlag(_Player, "LLBARTER_AttitudeBoostActive");
 NOT DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost);
+NOT DB_LLBARTER_Temp_PersuasionOffset(_Player, _PersuasionAttitudeBonus);
+CharacterAddAttitudeTowardsPlayer(_Trader, _Player, _RemoveAttitude);
+ObjectClearFlag(_Player, "LLBARTER_AttitudeBoostActive", 0);
+
+IF
+ObjectFlagCleared("LLBARTER_AttitudeBoostActive", (CHARACTERGUID)_Player, _)
+AND
+DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost)
+THEN
+NOT DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost);
+
+QRY
+LLBARTER_QRY_GetPersuasionOffset((CHARACTERGUID)_Player)
+AND
+CharacterGetAbility(_Player, "Persuasion", _Persuasion)
+AND
+_Persuasion > 0
+AND
+IntegerProduct(_Persuasion, 5, _PersuasionAttitudeBonus)
+THEN
+DB_LLBARTER_Temp_PersuasionOffset(_Player, _PersuasionAttitudeBonus);
+
+QRY
+LLBARTER_QRY_GetPersuasionOffset((CHARACTERGUID)_Player)
+AND
+NOT DB_LLBARTER_Temp_PersuasionOffset(_Player, _)
+THEN
+DB_LLBARTER_Temp_PersuasionOffset(_Player, 0);
 
 PROC
 LLBARTER_RemoveAttitudeBonusesFromPlayer((CHARACTERGUID)_Player)
@@ -517,11 +570,16 @@ DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost)
 AND
 _AttitudeBoost > 0
 AND
+LLBARTER_QRY_GetPersuasionOffset(_Player)
+AND
+DB_LLBARTER_Temp_PersuasionOffset(_Player, _PersuasionAttitudeBonus)
+AND
 IntegerProduct(_AttitudeBoost, -1, _RemoveAttitude)
 THEN
-CharacterAddAttitudeTowardsPlayer(_Trader, _Player, _RemoveAttitude);
-ObjectClearFlag(_Player, "LLBARTER_AttitudeBoostActive");
 NOT DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost);
+NOT DB_LLBARTER_Temp_PersuasionOffset(_Player, _PersuasionAttitudeBonus);
+CharacterAddAttitudeTowardsPlayer(_Trader, _Player, _RemoveAttitude);
+ObjectClearFlag(_Player, "LLBARTER_AttitudeBoostActive", 0);
 
 PROC
 LLBARTER_RemoveAttitudeBonusesFromPlayer((CHARACTERGUID)_Player)
