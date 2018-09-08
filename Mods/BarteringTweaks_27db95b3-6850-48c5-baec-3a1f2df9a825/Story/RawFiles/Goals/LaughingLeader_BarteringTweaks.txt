@@ -221,6 +221,8 @@ AND
 NOT GlobalGetFlag("LLBARTER_PersuasionSharingDisabled", 1)
 AND
 NOT GlobalGetFlag("LLBARTER_PersuasionDialogSharingEnabled", 1)
+AND
+NOT GlobalGetFlag("LLBARTER_AttitudeSharingEnabled", 1)
 THEN
 LLBARTER_SetHighestPersuasion();
 ProcObjectTimer(_Player, "LLBARTER_SetPersuasionBoost", 250);
@@ -404,7 +406,7 @@ DB_NOOP(1);
 QRY
 LLBARTER_QRY_PersuasionSharingEnabled()
 AND
-GlobalGetFlag("LLBARTER_PersuasionDialogSharingEnabled", 1)
+NOT GlobalGetFlag("LLBARTER_PersuasionSharingDisabled", 1)
 THEN
 DB_NOOP(1);
 
