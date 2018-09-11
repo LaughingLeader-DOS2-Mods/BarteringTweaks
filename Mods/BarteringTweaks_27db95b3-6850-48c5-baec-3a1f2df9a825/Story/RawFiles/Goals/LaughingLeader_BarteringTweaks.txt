@@ -149,6 +149,7 @@ THEN
 UserSetFlag(_Player, "LLBARTER_BarterBonusActive", 0);
 SetVarInteger(_Player, "LLBARTER_BarterBonus", _BonusVal);
 SetStoryEvent(_Player, "LLBARTER_Commands_ApplyBarteringBonus");
+LLBARTER_BonusEnabledText(_Player, "Bartering", _BonusVal, "FFD700");
 
 IF
 DialogEnded(_Dialog, _Instance)
@@ -182,6 +183,7 @@ AND
 LLBARTER_QRY_HasStatus(_Player, "LLBARTER_BARTERBONUS")
 THEN
 RemoveStatus(_Player, "LLBARTER_BARTERBONUS");
+LLBARTER_BonusDisabledText(_Player, "Bartering", "FFFFFF");
 
 PROC
 ProcObjectTimerFinished((CHARACTERGUID)_UserPlayer, "LLBARTER_RemoveBarterBonusFromUserCharacters")
@@ -198,6 +200,7 @@ AND
 LLBARTER_QRY_HasStatus(_Player, "LLBARTER_BARTERBONUS")
 THEN
 RemoveStatus(_Player, "LLBARTER_BARTERBONUS");
+LLBARTER_BonusDisabledText(_Player, "Bartering", "FFFFFF");
 
 PROC
 LLBARTER_RemoveBarteringBonusesFromPlayer((CHARACTERGUID)_Player)
@@ -250,6 +253,7 @@ CharacterGetReservedUserID(_Player, _UserID)
 THEN
 LLBARTER_ApplyPersuasionBonusToUser(_UserID, _Bonus);
 UserSetFlag(_Player, "LLBARTER_PersuasionBonusApplied");
+LLBARTER_CheckDialogSpeakerForPersuasionBonus(_Player, _Bonus);
 
 QRY
 LLBARTER_QRY_SetHighestPersuasion()
@@ -308,6 +312,15 @@ THEN
 SetVarInteger(_Player, "LLBARTER_PersuasionBonus", _BonusVal);
 SetStoryEvent(_Player, "LLBARTER_Commands_ApplyPersuasionBonus");
 ObjectSetFlag(_Player, "LLBARTER_PersuasionBoostActive", 0);
+LLBARTER_BonusEnabledText(_Player, "Persuasion", _BonusVal, "FF69B4");
+
+PROC
+LLBARTER_CheckDialogSpeakerForPersuasionBonus((CHARACTERGUID)_Player, (INTEGER)_TargetVal)
+AND
+NOT LLBARTER_QRY_HasStatus(_Player, "LLBARTER_PERSUASIONBONUS")
+THEN
+DebugBreak("[LLBARTER:CheckDialogSpeakerForPersuasionBonus] [ERROR] Player initiating dialog never got a persuasion boost. UserID mismatch?");
+LLBARTER_ApplyPersuasionBonus(_Player, _TargetVal);
 
 IF
 TradeEnds(_Player, _Trader)
@@ -361,6 +374,7 @@ LLBARTER_QRY_HasStatus(_Player, "LLBARTER_PERSUASIONBONUS")
 THEN
 RemoveStatus(_Player, "LLBARTER_PERSUASIONBONUS");
 ObjectClearFlag(_Player, "LLBARTER_PersuasionBoostActive", 0);
+LLBARTER_BonusDisabledText(_Player, "Persuasion", "FFFFFF");
 
 PROC
 LLBARTER_RemovePersuasionBonuses((CHARACTERGUID)_UserPlayer)
@@ -379,6 +393,7 @@ AND
 LLBARTER_QRY_HasStatus(_Player, "LLBARTER_PERSUASIONBONUS")
 THEN
 RemoveStatus(_Player, "LLBARTER_PERSUASIONBONUS");
+LLBARTER_BonusDisabledText(_Player, "Persuasion", "FFFFFF");
 
 PROC
 LLBARTER_RemovePersuasionBonusFromPlayer((CHARACTERGUID)_Player)
@@ -520,6 +535,7 @@ THEN
 DB_LLBARTER_Temp_TargetAttitude(_Trader, _Player, _StartingVal);
 CharacterAddAttitudeTowardsPlayer(_Trader, _Player, _AttitudeBoost);
 ObjectSetFlag(_Player, "LLBARTER_AttitudeBoostActive", 0);
+LLBARTER_BonusEnabledText(_Player, "Attitude", _AttitudeBoost, "40E0D0");
 
 IF
 CharacterAttitudeTowardsPlayerChanged((CHARACTERGUID)_Trader, (CHARACTERGUID)_Player, (INTEGER)_NewAttitude)
@@ -549,6 +565,7 @@ THEN
 NOT DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost);
 CharacterAddAttitudeTowardsPlayer(_Trader, _Player, _RemoveAttitude);
 ObjectClearFlag(_Player, "LLBARTER_AttitudeBoostActive", 0);
+LLBARTER_BonusDisabledText(_Player, "Attitude", "FFFFFF");
 
 IF
 ObjectFlagCleared("LLBARTER_AttitudeBoostActive", (CHARACTERGUID)_Player, _)
@@ -591,16 +608,12 @@ DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost)
 AND
 _AttitudeBoost > 0
 AND
-LLBARTER_QRY_GetPersuasionOffset(_Player)
-AND
-DB_LLBARTER_Temp_PersuasionOffset(_Player, _PersuasionAttitudeBonus)
-AND
 IntegerProduct(_AttitudeBoost, -1, _RemoveAttitude)
 THEN
 NOT DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost);
-NOT DB_LLBARTER_Temp_PersuasionOffset(_Player, _PersuasionAttitudeBonus);
 CharacterAddAttitudeTowardsPlayer(_Trader, _Player, _RemoveAttitude);
 ObjectClearFlag(_Player, "LLBARTER_AttitudeBoostActive", 0);
+LLBARTER_BonusDisabledText(_Player, "Attitude", "FFFFFF");
 
 PROC
 LLBARTER_RemoveAttitudeBonusesFromPlayer((CHARACTERGUID)_Player)
@@ -814,6 +827,47 @@ ObjectGetFlag(_Character, "LLBARTER_LearnedPetPal", 1)
 THEN
 CharacterStatusText(_Character, "LLBARTER_StatusText_PetPalLearningFailed");
 DB_CustomUseItemResponse(_Character, _Item, 0);
+//END_REGION
+
+//REGION STATUS_TEXT
+
+PROC
+LLBARTER_BonusEnabledText((CHARACTERGUID)_Player, (STRING)_Type, (INTEGER)_BonusVal, (STRING)_FontColor)
+AND
+GlobalGetFlag("LLBARTER_DebugStatusTextEnabled", 1)
+AND
+IntegertoString(_BonusVal, _BonusStr)
+AND
+StringConcatenate("<font color='#", _FontColor, _Str1)
+AND
+StringConcatenate(_Str1, "'>", _Str2)
+AND
+StringConcatenate(_Str2, "Party ", _Str3)
+AND
+StringConcatenate(_Str3, _Type, _Str4)
+AND
+StringConcatenate(_Str4, " Enabled (<font color='#00FF00'>", _Str5)
+AND
+StringConcatenate(_Str5, _BonusStr, _Str6)
+AND
+StringConcatenate(_Str6, "</font>)</font>", _Message)
+THEN
+CharacterStatusText(_Player, _Message);
+
+PROC
+LLBARTER_BonusDisabledText((CHARACTERGUID)_Player, (STRING)_Type, (STRING)_FontColor)
+AND
+GlobalGetFlag("LLBARTER_DebugStatusTextEnabled", 1)
+AND
+StringConcatenate("<font color='#", _FontColor, _Str1)
+AND
+StringConcatenate(_Str1, "'>", _Str2)
+AND
+StringConcatenate(_Str2, _Type, _Str3)
+AND
+StringConcatenate(_Str3, " Bonus Removed</font>", _Message)
+THEN
+CharacterStatusText(_Player, _Message);
 //END_REGION
 
 //REGION DIALOG_MENU
