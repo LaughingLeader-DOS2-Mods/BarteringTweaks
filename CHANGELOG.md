@@ -1,5 +1,8 @@
 Bartering Tweaks Changelog
 =======
+# 1.0.6.1
+* Fixed a typo that prevented a sneaking flag from being cleared from party members, preventing them from removing the party's sneaking status.
+
 # 1.0.5.0
 * Fixes for sharing attitude with characters that have Stench. Note that your attitude bonuses won't be visible on your current character until you switch between characters in the trade menu.
 

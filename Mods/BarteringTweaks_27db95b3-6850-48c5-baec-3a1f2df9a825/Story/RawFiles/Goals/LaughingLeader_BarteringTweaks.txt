@@ -643,6 +643,7 @@ NOT UserGetFlag(_Player, "LLBARTER_SneakingTweaksDisabled", 1)
 AND
 CharacterGetReservedUserID(_Player, _UserID)
 THEN
+ObjectClearFlag(_Player, "LLBARTER_SneakingRemovedByScript");
 UserSetFlag(_Player, "LLBARTER_PartySneakEnabled", 0);
 DB_LLBARTER_Temp_ApplyingPartySneak(_Player, _UserID);
 IterateParty(_Player, "LLBARTER_OnIterate_ApplySneaking");
@@ -686,13 +687,13 @@ DB_LLBARTER_Temp_BlockPartySneakRemoval(_Player);
 IF
 CharacterSawSneakingCharacter(_Npc, _Player)
 AND
+CharacterIsAlly(_Npc, _Player, 0)
+AND
 CharacterIsControlled(_Player, 1)
 AND
 CharacterIsInCombat(_Player, 0)
 AND
 UserGetFlag(_Player, "LLBARTER_PartySneakEnabled", 1)
-AND
-CharacterIsAlly(_Npc, _Player, 0)
 THEN
 DB_LLBARTER_Temp_BlockPartySneakRemoval(_Player);
 
@@ -712,7 +713,7 @@ DB_LLBARTER_Temp_BlockPartySneakRemoval(_Player);
 IF
 CharacterStatusRemoved(_Player, "SNEAKING", _)
 AND
-ObjectGetFlag(_Player, "LLBARTER_SneakingRemovedByScript", 0)
+NOT ObjectGetFlag(_Player, "LLBARTER_SneakingRemovedByScript", 1)
 AND
 CharacterIsControlled(_Player, 1)
 AND
@@ -721,6 +722,14 @@ AND
 UserGetFlag(_Player, "LLBARTER_PartySneakEnabled", 1)
 THEN
 ProcObjectTimer(_Player, "LLBARTER_OnSneakingRemoved_CheckConditions", 250);
+DebugBreak("[LLBARTER] Checking conditions");
+
+IF
+CharacterStatusRemoved(_Player, "SNEAKING", _)
+AND
+ObjectGetFlag(_Player, "LLBARTER_SneakingRemovedByScript", 1)
+THEN
+DebugBreak("[LLBARTER] Sneaking removed by script");
 
 PROC
 ProcObjectTimerFinished((CHARACTERGUID)_Player, "LLBARTER_OnSneakingRemoved_CheckConditions")
@@ -750,13 +759,6 @@ DB_LLBARTER_Temp_RemovingPartySneak(_Player, _UserID);
 IterateParty(_Player, "LLBARTER_RemoveSneaking");
 ProcObjectTimer(_Player, "LLBARTER_ResetRemovingPartySneakDatabase", 500);
 
-PROC
-ProcObjectTimerFinished((CHARACTERGUID)_Player, "LLBARTER_ResetRemovingPartySneakDatabase")
-AND
-DB_LLBARTER_Temp_RemovingPartySneak(_Player, _UserID)
-THEN
-NOT DB_LLBARTER_Temp_RemovingPartySneak(_Player, _UserID);
-
 IF
 StoryEvent((CHARACTERGUID)_PartyMember, "LLBARTER_RemoveSneaking")
 AND
@@ -764,24 +766,29 @@ DB_LLBARTER_Temp_RemovingPartySneak(_Player, _UserID)
 AND
 _PartyMember != _Player
 AND
+CharacterGetReservedUserID(_PartyMember, _UserID)
+AND
 HasActiveStatus(_PartyMember, "SNEAKING", 1)
 AND
 CharacterIsInCombat(_PartyMember, 0)
-AND
-CharacterGetReservedUserID(_PartyMember, _UserID)
 AND
 CharactersAreGrouped(_Player, _PartyMember, 1)
 THEN
 ObjectSetFlag(_PartyMember, "LLBARTER_SneakingRemovedByScript");
 RemoveStatus(_PartyMember, "SNEAKING");
-ProcObjectTimer(_Player, "LLBARTER_Timers_ResetSneakingRemovedFlag", 250);
+ProcObjectTimer(_PartyMember, "LLBARTER_Timers_ResetSneakingRemovedFlag", 250);
 CharacterStatusText(_PartyMember, "<font color='#00FA9A' size='18'>Sneaking Toggled Off</font>");
 //SetStoryEvent(_PartyMember, "LLBARTER_Commands_RemoveSneaking");
 
 PROC
-ProcObjectTimerFinished((CHARACTERGUID)_Player, "LLBARTER_Timers_ResetSneakingRemovedFlag")
+ProcObjectTimerFinished((CHARACTERGUID)_Player, "LLBARTER_ResetRemovingPartySneakDatabase")
 AND
-ObjectGetFlag(_Player, "LLBARTER_SneakingRemovedByScript", 1)
+DB_LLBARTER_Temp_RemovingPartySneak(_Player, _UserID)
+THEN
+NOT DB_LLBARTER_Temp_RemovingPartySneak(_Player, _UserID);
+
+PROC
+ProcObjectTimerFinished((CHARACTERGUID)_Player, "LLBARTER_Timers_ResetSneakingRemovedFlag")
 THEN
 ObjectClearFlag(_Player, "LLBARTER_SneakingRemovedByScript");
 //END_REGION
