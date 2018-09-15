@@ -1000,15 +1000,15 @@ DebugBreak(_Str);
 IF
 DB_LLBARTER_StoryStarted(1)
 THEN
-LLBARTER_Updater_SetVersion("1.1.0.0");
+LLBARTER_Updater_SetVersion("1.1.0.2");
 
 IF
 GameStarted(_,_)
 AND
-LLBARTER_Updater_QRY_UpdateNeeded("1.1.0.0")
+LLBARTER_Updater_QRY_UpdateNeeded("1.1.0.2")
 THEN
-LLBARTER_Updater_RemoveOldVersions("1.1.0.0");
-LLBARTER_Updater_SetVersion("1.1.0.0");
+LLBARTER_Updater_RemoveOldVersions("1.1.0.2");
+LLBARTER_Updater_SetVersion("1.1.0.2");
 
 QRY
 LLBARTER_Updater_QRY_UpdateNeeded((STRING)_Version)
@@ -1106,6 +1106,32 @@ DialogRequestStopForDialog("LLBARTER_SettingsMenu", _Player);
 //END_REGION
 
 //REGION SETTINGS_BOOK
+//Non-moveable settings book fix.
+PROC
+LLBARTER_Updater_VersionChanged((STRING)_OldVersion, "1.1.0.2")
+AND
+_OldVersion == "1.1.0.1"
+THEN
+DB_LLBARTER_Temp_ResetSettingsBook(1);
+
+PROC
+LLBARTER_Updater_VersionChanged((STRING)_OldVersion, "1.1.0.2")
+AND
+_OldVersion == "1.1.0.0"
+THEN
+DB_LLBARTER_Temp_ResetSettingsBook(1);
+
+IF
+DB_LLBARTER_Temp_ResetSettingsBook(1)
+AND
+CharacterGetHostCharacter(_Host)
+AND
+GetItemForItemTemplateInPartyInventory(_Host, "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", _Book)
+THEN
+ItemRemove(_Book);
+GlobalClearFlag("LLBARTER_AddedInitialSettingsBook");
+TimerLaunch("LLBARTER_Timers_AddInitialSettingsBook", 500);
+
 IF
 GameStarted(_Level, _)
 AND

@@ -1,6 +1,6 @@
 Bartering Tweaks Changelog
 =======
-# 1.1.0.1
+# 1.1.0.2
 * Quick hotfix to fix the settings book not being movable. 
 
 # 1.1.0.0
