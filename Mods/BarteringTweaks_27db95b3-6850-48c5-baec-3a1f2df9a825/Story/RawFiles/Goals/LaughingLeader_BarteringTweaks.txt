@@ -1057,6 +1057,8 @@ DB_LeaderLib_ModApi_RegisterActiveGoal("BarteringTweaks", "LaughingLeader", "Lau
 DB_LeaderLib_ModApi_RegisterMenu("LaughingLeader.BarteringTweaks", "[Bartering Tweaks] Settings", "LLBARTER_SettingsMenu", "BarteringTweaks", "LaughingLeader");
 DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4, "");
 DB_LeaderLib_Treasure_ItemMaxAmount("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4);
+DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", 1, "");
+DB_LeaderLib_Treasure_ItemMaxAmount("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", 1);
 
 PROC
 LLBARTER_Updater_VersionChanged((STRING)_OldVersion, (STRING)_NewVersion)
@@ -1067,6 +1069,14 @@ NOT DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks
 THEN
 DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4, "");
 DB_LeaderLib_Treasure_ItemMaxAmount("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4);
+
+PROC
+LLBARTER_Updater_VersionChanged((STRING)_OldVersion, (STRING)_NewVersion)
+AND
+NOT DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", _, _)
+THEN
+DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", 1, "");
+DB_LeaderLib_Treasure_ItemMaxAmount("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", 1);
 
 //Dialog exiting bug
 PROC

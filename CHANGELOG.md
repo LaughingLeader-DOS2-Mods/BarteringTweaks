@@ -1,5 +1,8 @@
 Bartering Tweaks Changelog
 =======
+# 1.1.0.1
+* Quick hotfix to fix the settings book not being movable. 
+
 # 1.1.0.0
 * Added a Bartering Tweaks settings book. It should automatically be added to each user upon loading a save, or when playing a new game.
 
