@@ -1000,15 +1000,15 @@ DebugBreak(_Str);
 IF
 DB_LLBARTER_StoryStarted(1)
 THEN
-LLBARTER_Updater_SetVersion("1.0.1.1");
+LLBARTER_Updater_SetVersion("1.1.0.0");
 
 IF
 GameStarted(_,_)
 AND
-LLBARTER_Updater_QRY_UpdateNeeded("1.0.1.1")
+LLBARTER_Updater_QRY_UpdateNeeded("1.1.0.0")
 THEN
-LLBARTER_Updater_RemoveOldVersions("1.0.1.1");
-LLBARTER_Updater_SetVersion("1.0.1.1");
+LLBARTER_Updater_RemoveOldVersions("1.1.0.0");
+LLBARTER_Updater_SetVersion("1.1.0.0");
 
 QRY
 LLBARTER_Updater_QRY_UpdateNeeded((STRING)_Version)
@@ -1083,6 +1083,80 @@ AND
 NOT DB_DialogNPCs(_, _Player, _)
 THEN
 RemoveStatus(_Player, "LLBARTER_PERSUASIONBONUS");
+
+//The dialog LeaderLib_IsHost flag was changed.
+PROC
+LLBARTER_Updater_VersionChanged((STRING)_OldVersion, "1.1.0.0")
+AND
+DB_DialogName("LLBARTER_SettingsMenu", _Instance)
+AND
+DB_DialogPlayers(_Instance, _Player, _)
+THEN
+DialogRequestStopForDialog("LLBARTER_SettingsMenu", _Player);
+//END_REGION
+
+//REGION SETTINGS_BOOK
+IF
+GameStarted(_Level, _)
+AND
+IsGameLevel(_Level, 1)
+AND
+NOT DB_GlobalFlag("LLBARTER_AddedInitialSettingsBook")
+THEN
+TimerCancel("LLBARTER_Timers_AddInitialSettingsBook");
+TimerLaunch("LLBARTER_Timers_AddInitialSettingsBook", 500);
+
+IF
+TimerFinished("LLBARTER_Timers_AddInitialSettingsBook")
+THEN
+IterateParties("LLBARTER_Iterator_CheckPlayersForBook");
+GlobalSetFlag("LLBARTER_AddedInitialSettingsBook");
+
+IF
+StoryEvent((CHARACTERGUID)_Player, "LLBARTER_Iterator_CheckPlayersForBook")
+AND
+ItemTemplateIsInUserInventory(_Player, "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", 0, _Count)
+AND
+_Count < 1
+AND
+CharacterIsControlled(_Player, 1)
+THEN
+ItemTemplateAddTo("BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", _Player, 1, 0);
+
+PROC
+ProcBlockUseOfItem(_Character, _Item)
+AND
+GetTemplate(_Item, "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba")
+AND
+CharacterIsInCombat(_Character, 1)
+THEN
+CharacterStatusText(_Character, "<font color='#FF0000'>*You can't open the settings menu while in combat!*</font>");
+DB_CustomUseItemResponse(_Character, _Item, 0);
+
+IF
+CharacterUsedItemTemplate(_Character, "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", _Item)
+AND
+CharacterIsControlled(_Character, 1)
+AND
+QRY_SpeakerIsAvailable(_Character)
+THEN
+Proc_StartDialog(0, "LLBARTER_SettingsMenu", _Character, _Character);
+
+IF
+DialogStarted("LLBARTER_SettingsMenu", _)
+AND
+CharacterGetHostCharacter(_Host)
+THEN
+UserSetFlag(_Host, "LLBARTER_IsHost", 0);
+DB_LLBARTER_Temp_FlaggedHost(_Host);
+
+IF
+DialogEnded("LLBARTER_SettingsMenu", _)
+AND
+DB_LLBARTER_Temp_FlaggedHost(_Host)
+THEN
+UserClearFlag(_Host, "LLBARTER_IsHost", 0);
+NOT DB_LLBARTER_Temp_FlaggedHost(_Host);
 //END_REGION
 EXITSECTION
 
