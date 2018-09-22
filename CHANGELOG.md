@@ -1,6 +1,6 @@
 Bartering Tweaks Changelog
 =======
-# 1.2.0.1
+# 1.2.0.2
 * Moved main bulk of code into a sub-goal.
 * Tweaked attitude removal / persuasion re-applying.
 * Added registered LeaderLib Mod Menu dialogs to a "blacklist", so persuasion/attitude sharing isn't set when opening a settings menu.
