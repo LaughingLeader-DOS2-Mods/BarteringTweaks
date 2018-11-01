@@ -28,12 +28,51 @@ CharacterGetReservedUserID((CHARACTERGUID)_Player, _UserID)
 THEN
 DB_NOOP(1);
 
+//Dual Dialogs
 QRY
 LLBARTER_QRY_IgnoreDialog((STRING)_Dialog)
 AND
+NOT DB_LLBARTER_Temp_DialogIgnored(_Dialog)
+AND
+DB_LLBARTER_DualDialogName(_ParentDialog, _Dialog)
+THEN
+DB_LLBARTER_Temp_DialogIgnored(_Dialog);
+
+QRY
+LLBARTER_QRY_IgnoreDialog((STRING)_Dialog)
+AND
+NOT DB_LLBARTER_Temp_DialogIgnored(_Dialog)
+AND
+StringContains(_Dialog, "_PDD_", 1)
+THEN
+DB_LLBARTER_Temp_DialogIgnored(_Dialog);
+
+//Reflection dialogs start/end for each character
+//The dialog "ReflectionDialogWrapper" should start/end the bonus sharing
+QRY
+LLBARTER_QRY_IgnoreDialog((STRING)_Dialog)
+AND
+NOT DB_LLBARTER_Temp_DialogIgnored(_Dialog)
+AND
+StringContains(_Dialog, "_RD_", 1)
+THEN
+DB_LLBARTER_Temp_DialogIgnored(_Dialog);
+
+QRY
+LLBARTER_QRY_IgnoreDialog((STRING)_Dialog)
+AND
+NOT DB_LLBARTER_Temp_DialogIgnored(_Dialog)
+AND
 DB_LLBARTER_DialogBlacklist(_ModID, _Dialog)
 THEN
-DB_NOOP(1);
+DB_LLBARTER_Temp_DialogIgnored(_Dialog);
+
+QRY
+LLBARTER_QRY_IgnoreDialog((STRING)_Dialog)
+AND
+DB_LLBARTER_Temp_DialogIgnored(_Dialog)
+THEN
+NOT DB_LLBARTER_Temp_DialogIgnored(_Dialog);
 
 QRY
 LLBARTER_QRY_IgnoreDialogByInstance((INTEGER)_Instance)
@@ -197,8 +236,6 @@ LLBARTER_BonusEnabledText(_Player, "Bartering", _BonusVal, "FFD700");
 
 IF
 DialogEnded(_Dialog, _Instance)
-AND
-NOT DB_LLBARTER_DualDialogInstance(_Dialog, _Instance)
 AND
 NOT LLBARTER_QRY_IgnoreDialog(_Dialog)
 AND
@@ -377,7 +414,7 @@ ObjectClearFlag(_Player, "LLBARTER_PersuasionBoostActive");
 IF
 DialogEnded(_Dialog, _Instance)
 AND
-NOT DB_LLBARTER_DualDialogInstance(_Dialog, _Instance)
+NOT LLBARTER_QRY_IgnoreDialog(_Dialog)
 AND
 DialogGetInvolvedPlayer(_Instance, 1, (CHARACTERGUID)_Player)
 AND
@@ -957,6 +994,26 @@ DB_DialogPlayers(_Inst,_Player,_)
 THEN
 DialogRequestStopForDialog("LLBARTER_SettingsMenu", _Player);
 
+PROC
+LLBARTER_Updater_VersionChanged((STRING)_OldVersion, (STRING)_NewVersion)
+AND
+_NewVersion == "1.2.1.2"
+THEN
+IterateUsers("LLBARTER_ResetBonusesByUser");
+
+IF
+UserEvent(_UserID, "LLBARTER_ResetBonusesByUser")
+AND
+NOT LLBARTER_QRY_UserCharactersInDialog(_UserID)
+AND
+DB_IsPlayer(_Player)
+AND
+CharacterGetReservedUserID(_Player, _UserID)
+THEN
+LLBARTER_RemovePersuasionBonusFromPlayer(_Player);
+LLBARTER_RemoveAttitudeBonusesFromPlayer(_Player);
+LLBARTER_RemoveBarteringBonusesFromPlayer(_Player);
+
 IF
 GlobalFlagSet("LLBARTER_Commands_ClearBonuses")
 THEN
@@ -1102,10 +1159,10 @@ GameStarted(_Level, _)
 AND
 IsGameLevel(_Level, 1)
 AND
-LLBARTER_Updater_QRY_UpdateNeeded("1.2.1.0")
+LLBARTER_Updater_QRY_UpdateNeeded("1.2.1.2")
 THEN
-LLBARTER_Updater_RemoveOldVersions("1.2.1.0");
-LLBARTER_Updater_SetVersion("1.2.1.0");
+LLBARTER_Updater_RemoveOldVersions("1.2.1.2");
+LLBARTER_Updater_SetVersion("1.2.1.2");
 
 QRY
 LLBARTER_Updater_QRY_UpdateNeeded((STRING)_Version)
