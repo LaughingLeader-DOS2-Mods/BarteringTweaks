@@ -1,5 +1,9 @@
 Bartering Tweaks Changelog
 =======
+# 1.2.1.2
+* Fix for sharing issues related to party decision dialogs and reflection dialogs.
+	* Dialogs where persuasion sharing failed, such as with Birdie the dog in Fort Joy, should now use the shared persuasion bonuses like intended.
+
 # 1.2.0.2
 * Moved main bulk of code into a sub-goal.
 * Tweaked attitude removal / persuasion re-applying.
