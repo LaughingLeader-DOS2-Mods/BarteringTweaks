@@ -1128,6 +1128,7 @@ NOT DB_LLBARTER_DialogBlacklist("LeaderLib", _)
 THEN
 DB_LLBARTER_DialogBlacklist("LeaderLib", "LeaderLib_ModMenu");
 DB_LLBARTER_DialogBlacklist("LeaderLib", "LeaderLib_SettingsMenu");
+DB_LLBARTER_DialogBlacklist("LeaderLib", "LeaderLib_AutosaveMenu");
 
 PROC
 LLBARTER_InitSettings()
@@ -1207,7 +1208,7 @@ DB_LLBARTER_RegisteredLeaderLibSettings(1);
 IF
 DB_LLBARTER_RegisteredLeaderLibSettings(1)
 THEN
-DB_LeaderLib_ModApi_RegisterActiveGoal("BarteringTweaks", "LaughingLeader", "LaughingLeader_BarteringTweaks");
+DB_LeaderLib_ModApi_RegisterActiveGoal("BarteringTweaks", "LaughingLeader", "LLBARTER_Main");
 DB_LeaderLib_ModApi_RegisterMenu("LaughingLeader.BarteringTweaks", "[Bartering Tweaks] Settings", "LLBARTER_SettingsMenu", "BarteringTweaks", "LaughingLeader");
 DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4, "");
 DB_LeaderLib_Treasure_ItemMaxAmount("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4);
