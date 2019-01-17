@@ -1202,6 +1202,7 @@ TemporaryCharacterCreateAtPosition(_x, _y, _z, "Humans_Hero_Female_de8ea39b-6989
 AND
 TemporaryCharacterCreateAtPosition(_x, _y, _z, "Elves_Hero_Female_7ef846f5-34dc-450c-815e-a58dfc190a7b", 0, _Member2)
 THEN
+CharacterAddGold(_Player, 5000);
 CharacterAddAbility(_Member1, "Persuasion", 3);
 CharacterAddAbility(_Member2, "Persuasion", 1);
 CharacterAddAbility(_Member2, "Barter", 4);
