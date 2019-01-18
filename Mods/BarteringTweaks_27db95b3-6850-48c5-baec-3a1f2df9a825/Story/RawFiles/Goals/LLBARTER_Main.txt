@@ -86,9 +86,9 @@ DB_NOOP(1);
 QRY
 LLBARTER_QRY_PlayerIsInADifferentDialog((CHARACTERGUID)_Player, (CHARACTERGUID)_UserPlayer)
 AND
-DB_DialogPlayers(_Instance, _Player, _)
+DB_DialogPlayers(_Instance, (GUIDSTRING)_Player, _)
 AND
-DB_DialogPlayers(_OtherInstance, _UserPlayer, _)
+DB_DialogPlayers(_OtherInstance, (GUIDSTRING)_UserPlayer, _)
 AND
 _Instance != _OtherInstance
 THEN
@@ -99,11 +99,11 @@ LLBARTER_QRY_UserIsInADifferentDialog((CHARACTERGUID)_UserPlayer, (INTEGER)_Inst
 AND
 CharacterGetReservedUserID(_UserPlayer, _UserID)
 AND
-DB_DialogPlayers(_OtherInstance, (CHARACTERGUID)_Player, _)
+DB_DialogPlayers(_OtherInstance, (GUIDSTRING)_Player, _)
 AND
 _Player != _UserPlayer
 AND
-CharacterGetReservedUserID(_Player, _UserID)
+CharacterGetReservedUserID((CHARACTERGUID)_Player, _UserID)
 AND
 _Instance != _OtherInstance
 THEN
@@ -1293,9 +1293,9 @@ DB_IsPlayer(_Player)
 AND
 LLBARTER_QRY_HasStatus(_Player, "LLBARTER_PERSUASIONBONUS")
 AND
-NOT DB_DialogPlayers(_, _Player, _)
+NOT DB_DialogPlayers(_, (GUIDSTRING)_Player, _)
 AND
-NOT DB_DialogNPCs(_, _Player, _)
+NOT DB_DialogNPCs(_, (GUIDSTRING)_Player, _)
 THEN
 RemoveStatus(_Player, "LLBARTER_PERSUASIONBONUS");
 
