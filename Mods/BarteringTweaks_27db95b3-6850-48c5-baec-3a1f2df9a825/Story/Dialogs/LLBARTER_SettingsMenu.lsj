@@ -444,7 +444,7 @@
                                                 "TagText" : {
                                                    "handle" : "ls::TranslatedStringRepository::s_HandleUnknown",
                                                    "type" : 28,
-                                                   "value" : "Enable Attitude Sharing"
+                                                   "value" : "Enable Attitude Sharing - When attitude is increased, the party is brought up to the same amount."
                                                 },
                                                 "stub" : {"type" : 19, "value" : 1}
                                              }

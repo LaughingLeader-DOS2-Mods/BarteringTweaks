@@ -381,15 +381,13 @@ AND
 DB_GlobalFlag("LLBARTER_PersuasionDialogSharingEnabled")
 THEN
 LLBARTER_PersuasionSharing_Start(_Player, _NPC, _Dialog, _Instance);
+LLBARTER_SharingStarted(_Player, _NPC, _Dialog, _Instance, "Persuasion");
 
 PROC
 LLBARTER_PersuasionSharing_Start((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC, (STRING)_Dialog, (INTEGER)_Instance)
 AND
-DialogGetInvolvedPlayer(_Instance, 1, (CHARACTERGUID)_Player)
-AND
 UserGetFlag(_Player, "LLBARTER_PersuasionBonusApplied", 0)
 THEN
-LLBARTER_SharingStarted(_Player, _NPC, _Dialog, _Instance, "Persuasion");
 LLBARTER_SetHighestPersuasion();
 ProcObjectTimer(_Player, "LLBARTER_SetPersuasionBoost", 250);
 
@@ -404,7 +402,6 @@ THEN
 LLBARTER_RemovePersuasionBonuses(_Player);
 LLBARTER_RemovePersuasionBonusFromPlayer(_Player);
 LLBARTER_SharingEnded(_Player, _NPC, _Dialog, _Instance, "Persuasion");
-ProcObjectTimer(_Player, "LLBARTER_Timers_PersuasionBonusRemoved_RemoveAttitude", 50);
 //END_REGION
 
 //REGION PERSUASION_SHARING
@@ -434,12 +431,7 @@ CharacterGetReservedUserID(_Player, _UserID)
 THEN
 LLBARTER_ApplyPersuasionBonusToUser(_UserID, _Bonus);
 UserSetFlag(_Player, "LLBARTER_PersuasionBonusApplied");
-LLBARTER_CheckDialogSpeakerForPersuasionBonus(_Player, _Bonus);
-
-PROC
-ProcObjectTimerFinished((CHARACTERGUID)_Player, "LLBARTER_SetPersuasionBoost")
-THEN
-ProcObjectTimer(_Player, "LLBARTER_Timers_PersuasionBonusSharingFinished", 50);
+//LLBARTER_CheckDialogSpeakerForPersuasionBonus(_Player, _Bonus);
 
 QRY
 LLBARTER_QRY_SetHighestPersuasion()
@@ -499,7 +491,7 @@ SetVarInteger(_Player, "LLBARTER_PersuasionBonus", _BonusVal);
 SetStoryEvent(_Player, "LLBARTER_Commands_ApplyPersuasionBonus");
 ObjectSetFlag(_Player, "LLBARTER_PersuasionBoostActive", 0);
 LLBARTER_BonusEnabledText(_Player, "Persuasion", _BonusVal, "FF69B4");
-
+/*
 PROC
 LLBARTER_CheckDialogSpeakerForPersuasionBonus((CHARACTERGUID)_Player, (INTEGER)_TargetVal)
 AND
@@ -507,6 +499,7 @@ NOT LLBARTER_QRY_HasStatus(_Player, "LLBARTER_PERSUASIONBONUS")
 THEN
 DebugBreak("[LLBARTER:CheckDialogSpeakerForPersuasionBonus] [ERROR] Player initiating dialog never got a persuasion boost. UserID mismatch?");
 LLBARTER_ApplyPersuasionBonus(_Player, _TargetVal);
+*/
 
 /*
 //Persuasion (Trade) End
@@ -586,240 +579,95 @@ THEN
 UserClearFlag(_Player, "LLBARTER_PersuasionBonusApplied", 0);
 //END_REGION
 
-//REGION ATTITUDE_START
-
-QRY
-LLBARTER_QRY_StartSharingAttitude((CHARACTERGUID)_Player)
-AND
-NOT DB_GlobalFlag("LLBARTER_PersuasionDialogSharingEnabled")
-THEN
-DB_NOOP(1);
-
-//No need to wait for persuasion if it's already active
-QRY
-LLBARTER_QRY_StartSharingAttitude((CHARACTERGUID)_Player)
-AND
-DB_GlobalFlag("LLBARTER_PersuasionDialogSharingEnabled")
-AND
-UserGetFlag(_Player, "LLBARTER_PersuasionBonusApplied", 1)
-THEN
-DB_NOOP(1);
-
-//Should fire after adding persuasion
-PROC
-LLBARTER_OnDialogStarted((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC, (STRING)_Dialog, (INTEGER)_Instance)
-AND
-DB_GlobalFlag("LLBARTER_AttitudeSharingEnabled")
-AND
-LLBARTER_QRY_StartSharingAttitude(_Player)
-THEN
-LLBARTER_AttitudeSharing_Start(_Player, _NPC, _Dialog, _Instance);
-
-PROC
-LLBARTER_OnDialogStarted((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC, (STRING)_Dialog, (INTEGER)_Instance)
-AND
-DB_GlobalFlag("LLBARTER_AttitudeSharingEnabled")
-AND
-NOT LLBARTER_QRY_StartSharingAttitude(_Player)
-THEN
-DB_LLBARTER_Temp_ShareAttitude(_Player, _NPC, _Dialog, _Instance);
-
-PROC
-ProcObjectTimerFinished((CHARACTERGUID)_Player, "LLBARTER_Timers_PersuasionBonusSharingFinished")
-AND
-DB_LLBARTER_Temp_ShareAttitude(_Player, _NPC, _Dialog, _Instance)
-THEN
-NOT DB_LLBARTER_Temp_ShareAttitude(_Player, _NPC, _Dialog, _Instance);
-LLBARTER_AttitudeSharing_Start(_Player, _NPC, _Dialog, _Instance);
-
-PROC
-LLBARTER_AttitudeSharing_Start((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC, (STRING)_Dialog, (INTEGER)_Instance)
-THEN
-LLBARTER_SharingStarted(_Player, _NPC, _Dialog, _Instance, "Attitude");
-LLBARTER_SetHighestAttitude(_NPC);
-DB_LLBARTER_Temp_AttitudeSharing(_Player, _NPC);
-ProcObjectTimerCancel(_NPC, "LLBARTER_Timers_SetAttitudeBoost");
-ProcObjectTimer(_NPC, "LLBARTER_Timers_SetAttitudeBoost", 50);
-
-QRY
-LLBARTER_QRY_CanRemoveAttitude((CHARACTERGUID)_Player)
-AND
-NOT DB_GlobalFlag("LLBARTER_PersuasionDialogSharingEnabled")
-THEN
-DB_NOOP(1);
-
-//No need to wait for persuasion if it's already active
-QRY
-LLBARTER_QRY_CanRemoveAttitude((CHARACTERGUID)_Player)
-AND
-DB_GlobalFlag("LLBARTER_PersuasionDialogSharingEnabled")
-AND
-UserGetFlag(_Player, "LLBARTER_PersuasionBonusApplied", 0)
-THEN
-DB_NOOP(1);
-
-PROC
-LLBARTER_OnDialogEnded((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC, (STRING)_Dialog, (INTEGER)_Instance)
-//AND
-//LLBARTER_QRY_CanRemoveAttitude(_Player)
-THEN
-LLBARTER_RemoveAttitudeBonuses_Start(_Player, _NPC, _Dialog, _Instance);
-
-/*
-PROC
-LLBARTER_OnDialogEnded((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC, (STRING)_Dialog, (INTEGER)_Instance)
-AND
-NOT LLBARTER_QRY_CanRemoveAttitude(_Player)
-THEN
-DB_LLBARTER_Temp_AttitudeRemoval(_Player, _NPC, _Dialog, _Instance);
-*/
-
-PROC
-LLBARTER_RemoveAttitudeBonuses_Start((CHARACTERGUID)_ActivePlayer, (CHARACTERGUID)_NPC, (STRING)_Dialog, (INTEGER)_Instance)
-AND
-CharacterGetReservedUserID(_ActivePlayer, _UserID)
-AND
-DB_IsPlayer(_Player)
-AND
-CharacterGetReservedUserID(_Player, _UserID)
-AND
-DB_LLBARTER_Temp_AttitudeBoost(_NPC, _Player, _AttitudeBoost)
-AND
-IntegerProduct(_AttitudeBoost, -1, _RemoveAttitude)
-THEN
-NOT DB_LLBARTER_Temp_AttitudeBoost(_NPC, _Player, _AttitudeBoost);
-CharacterAddAttitudeTowardsPlayer(_NPC, _Player, _RemoveAttitude);
-LLBARTER_BonusDisabledText(_Player, "Attitude", "FFFFFF");
-
-PROC
-LLBARTER_RemoveAttitudeBonuses_Start((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC, (STRING)_Dialog, (INTEGER)_Instance)
-THEN
-LLBARTER_SharingEnded(_Player, _NPC, _Dialog, _Instance, "Attitude");
-//END_REGION
-
-//REGION ATTITUDE_SHARING
-IF
-GlobalFlagCleared("LLBARTER_AttitudeSharingEnabled")
-AND
-DB_IsPlayer(_Player)
-THEN
-LLBARTER_RemoveAttitudeBonusesFromPlayer(_Player);
-
-IF
-GlobalFlagCleared("LLBARTER_AttitudeSharingEnabled")
-THEN
-LLBARTER_ClearSharing("Attitude");
-
-PROC
-ProcObjectTimerFinished((CHARACTERGUID)_NPC, "LLBARTER_Timers_SetAttitudeBoost")
-AND
-DB_LLBARTER_Temp_AttitudeSharing(_Player, _NPC)
-THEN
-NOT DB_LLBARTER_Temp_AttitudeSharing(_Player, _NPC);
-LLBARTER_SetAttitudeBoost(_Player, _NPC);
-ProcObjectTimer(_Player, "LLBARTER_Timers_AttitudeBonusSharingFinished", 50);
-
-QRY
-LLBARTER_QRY_SetHighestAttitude((CHARACTERGUID)_NPC)
-THEN
-LLBARTER_SetHighestAttitude(_NPC);
-
-PROC
-LLBARTER_SetHighestAttitude((CHARACTERGUID)_NPC)
-AND
-DB_LLBARTER_Temp_HighestAttitude(_NPC, _HighestPlayer, _Attitude)
-THEN
-NOT DB_LLBARTER_Temp_HighestAttitude(_NPC, _HighestPlayer, _Attitude);
-
-PROC
-LLBARTER_SetHighestAttitude((CHARACTERGUID)_NPC)
-THEN
-DB_LLBARTER_Temp_HighestAttitude(_NPC, NULL_00000000-0000-0000-0000-000000000000, 0);
-LLBARTER_GetHighestAttitude(_NPC);
-
-PROC
-LLBARTER_GetHighestAttitude((CHARACTERGUID)_NPC)
-AND
-DB_IsPlayer(_Player)
-AND
-NOT DB_LLBARTER_Temp_AttitudeBoost(_NPC, _Player, _)
-AND
-CharacterGetAttitudeTowardsPlayer(_NPC, _Player, _Attitude)
-AND
-_Attitude > 0
-AND
-DB_LLBARTER_Temp_HighestAttitude(_NPC, _OtherPlayer, _HighestAttitude)
-AND
-_Attitude > _HighestAttitude
-THEN
-NOT DB_LLBARTER_Temp_HighestAttitude(_NPC, _OtherPlayer, _HighestAttitude);
-DB_LLBARTER_Temp_HighestAttitude(_NPC, _Player, _Attitude);
-
-PROC
-LLBARTER_SetAttitudeBoost((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC)
-AND
-DB_LLBARTER_Temp_HighestAttitude(_NPC, _HighestPlayer, _Attitude)
-AND
-_Attitude > 0
-AND
-CharacterGetReservedUserID(_Player, _UserID)
-THEN
-LLBARTER_ApplyAttitudeBonusToUser(_NPC, _UserID, _Attitude);
-NOT DB_LLBARTER_Temp_HighestAttitude(_NPC, _HighestPlayer, _Attitude);
-
-PROC
-LLBARTER_ApplyAttitudeBonusToUser((CHARACTERGUID)_NPC, (INTEGER)_UserID, (INTEGER)_TargetVal)
-AND
-DB_IsPlayer(_Player)
-AND
-CharacterGetReservedUserID(_Player, _UserID)
-THEN
-LLBARTER_ApplyAttitudeBonus(_NPC, _Player, _TargetVal);
-
-PROC
-LLBARTER_ApplyAttitudeBonus((CHARACTERGUID)_NPC, (CHARACTERGUID)_Player, (INTEGER)_TargetVal)
-AND
-CharacterGetAttitudeTowardsPlayer(_NPC, _Player, _StartingVal)
-AND
-_TargetVal > _StartingVal
-AND
-_TargetVal > 0
-AND
-IntegerSubtract(_TargetVal, _StartingVal, _AttitudeBoost)
-THEN
-DB_LLBARTER_Temp_TargetAttitude(_NPC, _Player, _StartingVal);
-CharacterAddAttitudeTowardsPlayer(_NPC, _Player, _AttitudeBoost);
-LLBARTER_BonusEnabledText(_Player, "Attitude", _AttitudeBoost, "40E0D0");
-
+//REGION ATTITUDE_SHARING_V2
+//Simpler solution
 IF
 CharacterAttitudeTowardsPlayerChanged((CHARACTERGUID)_NPC, (CHARACTERGUID)_Player, (INTEGER)_NewAttitude)
 AND
-DB_LLBARTER_Temp_TargetAttitude(_NPC, _Player, _StartingVal)
+DB_GlobalFlag("LLBARTER_AttitudeSharingEnabled")
 AND
-IntegerSubtract(_NewAttitude, _StartingVal, _AttitudeBoost)
+_NewAttitude > 0
+AND
+NOT DB_LLBARTER_Temp_JustSharedAttitude(_Player)
 THEN
-NOT DB_LLBARTER_Temp_TargetAttitude(_NPC, _Player, _StartingVal);
-DB_LLBARTER_Temp_AttitudeBoost(_NPC, _Player, _AttitudeBoost);
+DB_LLBARTER_Temp_JustSharedAttitude(_Player);
+ProcObjectTimer(_Player, "LLBARTER_Timers_ClearJustSharedAttitude", 100);
+LLBARTER_ShareAttitudeBoostWithParty(_Player, _NPC, _NewAttitude);
+
+QRY
+LLBARTER_QRY_AttitudeIsCapped((CHARACTERGUID)_Player, (INTEGER)_Attitude, 0)
+AND
+_Attitude >= 100
+THEN
+DB_NOOP(1);
+
+QRY
+LLBARTER_QRY_AttitudeIsCapped((CHARACTERGUID)_Player, (INTEGER)_Attitude, 1)
+AND
+_Attitude >= 75
+THEN
+DB_NOOP(1);
 
 PROC
-LLBARTER_RemoveAttitudeBonusesFromPlayer((CHARACTERGUID)_Player)
+LLBARTER_ShareAttitudeBoostWithParty((CHARACTERGUID)_SharingPlayer, (CHARACTERGUID)_NPC, (INTEGER)_NewAttitude)
 AND
-DB_LLBARTER_Temp_AttitudeBoost(_NPC, _Player, _AttitudeBoost)
+DB_IsPlayer(_Player)
 AND
-_AttitudeBoost > 0
+_SharingPlayer != _Player
 AND
-IntegerProduct(_AttitudeBoost, -1, _RemoveAttitude)
+NOT DB_LLBARTER_Temp_JustSharedAttitude(_Player)
+AND
+CharacterIsInPartyWith(_Player, _SharingPlayer, 1)
+AND
+CharacterGetAttitudeTowardsPlayer(_NPC, _Player, _Current)
+AND
+CharacterHasTalent(_Player, "Stench", _Stench)
+AND
+NOT LLBARTER_QRY_AttitudeIsCapped(_Player, _Current, _Stench)
 THEN
-NOT DB_LLBARTER_Temp_AttitudeBoost(_NPC, _Player, _AttitudeBoost);
-CharacterAddAttitudeTowardsPlayer(_NPC, _Player, _RemoveAttitude);
-LLBARTER_BonusDisabledText(_Player, "Attitude", "FFFFFF");
+LLBARTER_IncreaseAttitude(_Player, _NPC, _Current, _NewAttitude);
 
 PROC
-LLBARTER_RemoveAttitudeBonusesFromPlayer((CHARACTERGUID)_Player)
+LLBARTER_IncreaseAttitude((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC, (INTEGER)_Current, (INTEGER)_NewAttitude)
 AND
-DB_LLBARTER_Temp_AttitudeBoost(_NPC, _Player, _AttitudeBoost)
+IntegerSubtract(_NewAttitude, _Current, _AddAttitude)
+AND
+_AddAttitude > 0
 THEN
-NOT DB_LLBARTER_Temp_AttitudeBoost(_NPC, _Player, _AttitudeBoost);
+DB_LLBARTER_Temp_JustSharedAttitude(_Player);
+CharacterAddAttitudeTowardsPlayer(_NPC, _Player, _AddAttitude);
+LLBARTER_AttitudeSharedText(_Player, _AddAttitude, "40E0D0");
+ProcObjectTimer(_Player, "LLBARTER_Timers_ClearJustSharedAttitude", 50);
+
+PROC
+ProcObjectTimerFinished((CHARACTERGUID)_Player, "LLBARTER_Timers_ClearJustSharedAttitude")
+AND
+DB_LLBARTER_Temp_JustSharedAttitude(_Player)
+THEN
+NOT DB_LLBARTER_Temp_JustSharedAttitude(_Player);
+
+PROC
+LLBARTER_AttitudeSharedText((CHARACTERGUID)_Player, (INTEGER)_BonusVal, (STRING)_FontColor)
+AND
+_BonusVal >= 0
+AND
+GlobalGetFlag("LLBARTER_DebugStatusTextEnabled", 1)
+AND
+IntegertoString(_BonusVal, _BonusStr)
+AND
+StringConcatenate("<font color='#", _FontColor, _Str1)
+AND
+StringConcatenate(_Str1, "'>", _Str2)
+AND
+StringConcatenate(_Str2, "Shared ", _Str4)
+AND
+StringConcatenate(_Str4, " (<font color='#00FF00'>", _Str5)
+AND
+StringConcatenate(_Str5, _BonusStr, _Str6)
+AND
+StringConcatenate(_Str6, "</font>) Attitude</font>", _Message)
+THEN
+CharacterStatusText(_Player, _Message);
 //END_REGION
 
 //REGION DUAL_DIALOG_CLEANUP
@@ -1082,7 +930,6 @@ AND
 StringConcatenate(_Str6, "</font>)</font>", _Message)
 THEN
 CharacterStatusText(_Player, _Message);
-DebugBreak(_Message);
 
 PROC
 LLBARTER_BonusEnabledText((CHARACTERGUID)_Player, (STRING)_Type, (INTEGER)_BonusVal, (STRING)_FontColor)
@@ -1108,7 +955,6 @@ AND
 StringConcatenate(_Str6, "</font>)</font>", _Message)
 THEN
 CharacterStatusText(_Player, _Message);
-DebugBreak(_Message);
 
 PROC
 LLBARTER_BonusDisabledText((CHARACTERGUID)_Player, (STRING)_Type, (STRING)_FontColor)
@@ -1124,7 +970,6 @@ AND
 StringConcatenate(_Str3, " Bonus Removed</font>", _Message)
 THEN
 CharacterStatusText(_Player, _Message);
-DebugBreak(_Message);
 //END_REGION
 
 //REGION DIALOG_MENU
@@ -1157,7 +1002,7 @@ AND
 CharacterGetReservedUserID(_Player, _UserID)
 THEN
 LLBARTER_RemovePersuasionBonusFromPlayer(_Player);
-LLBARTER_RemoveAttitudeBonusesFromPlayer(_Player);
+//LLBARTER_RemoveAttitudeBonusesFromPlayer(_Player);
 LLBARTER_RemoveBarteringBonusesFromPlayer(_Player);
 
 IF
@@ -1170,7 +1015,7 @@ IF
 StoryEvent((CHARACTERGUID)_Player, "LLBARTER_Debug_RemoveAllBonuses")
 THEN
 LLBARTER_RemovePersuasionBonusFromPlayer(_Player);
-LLBARTER_RemoveAttitudeBonusesFromPlayer(_Player);
+//LLBARTER_RemoveAttitudeBonusesFromPlayer(_Player);
 LLBARTER_RemoveBarteringBonusesFromPlayer(_Player);
 //END_REGION
 
@@ -1355,10 +1200,10 @@ GameStarted(_Level, _)
 AND
 IsGameLevel(_Level, 1)
 AND
-LLBARTER_Updater_QRY_UpdateNeeded("1.2.1.2")
+LLBARTER_Updater_QRY_UpdateNeeded("1.2.2.0")
 THEN
-LLBARTER_Updater_RemoveOldVersions("1.2.1.2");
-LLBARTER_Updater_SetVersion("1.2.1.2");
+LLBARTER_Updater_RemoveOldVersions("1.2.2.0");
+LLBARTER_Updater_SetVersion("1.2.2.0");
 
 QRY
 LLBARTER_Updater_QRY_UpdateNeeded((STRING)_Version)

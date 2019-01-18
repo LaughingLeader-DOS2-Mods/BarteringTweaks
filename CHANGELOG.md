@@ -1,5 +1,8 @@
 Bartering Tweaks Changelog
 =======
+# 1.2.2.0
+* Reworked attitude sharing to simply share attitude with the rest of the party when attitude is increased. Stench's negative attitude is factored in to the mix to bring those characters up to the same amount of attitude the rest of the party.
+
 # 1.2.1.2
 * Fix for sharing issues related to party decision dialogs and reflection dialogs.
 	* Dialogs where persuasion sharing failed, such as with Birdie the dog in Fort Joy, should now use the shared persuasion bonuses like intended.
