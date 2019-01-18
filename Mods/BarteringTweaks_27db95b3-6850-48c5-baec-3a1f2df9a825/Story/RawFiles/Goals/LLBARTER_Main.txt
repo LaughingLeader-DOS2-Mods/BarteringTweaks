@@ -93,6 +93,21 @@ AND
 _Instance != _OtherInstance
 THEN
 DB_NOOP(1);
+
+QRY
+LLBARTER_QRY_UserIsInADifferentDialog((CHARACTERGUID)_UserPlayer, (INTEGER)_Instance)
+AND
+CharacterGetReservedUserID(_UserPlayer, _UserID)
+AND
+DB_DialogPlayers(_OtherInstance, (CHARACTERGUID)_Player, _)
+AND
+_Player != _UserPlayer
+AND
+CharacterGetReservedUserID(_Player, _UserID)
+AND
+_Instance != _OtherInstance
+THEN
+DB_NOOP(1);
 //END_REGION
 
 //REGION DUAL_DIALOG
@@ -210,6 +225,8 @@ PROC
 LLBARTER_OnDialogEnded((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC, (STRING)_Dialog, (INTEGER)_Instance)
 AND
 UserGetFlag(_Player, "LLBARTER_BarterBonusActive", 1)
+AND
+NOT LLBARTER_QRY_UserIsInADifferentDialog(_Player, _Instance)
 THEN
 LLBARTER_RemoveBarterBonuses(_Player);
 LLBARTER_RemoveBarteringBonusesFromPlayer(_Player);
@@ -381,6 +398,8 @@ PROC
 LLBARTER_OnDialogEnded((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC, (STRING)_Dialog, (INTEGER)_Instance)
 AND
 UserGetFlag(_Player, "LLBARTER_PersuasionBonusApplied", 1)
+AND
+NOT LLBARTER_QRY_UserIsInADifferentDialog(_Player, _Instance)
 THEN
 LLBARTER_RemovePersuasionBonuses(_Player);
 LLBARTER_RemovePersuasionBonusFromPlayer(_Player);
@@ -392,7 +411,7 @@ ProcObjectTimer(_Player, "LLBARTER_Timers_PersuasionBonusRemoved_RemoveAttitude"
 //Persuasion (Trade) Start
 /*
 PROC
-StartTrade((CHARACTERGUID)_Player, (CHARACTERGUID)_Trader)
+StartTrade((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC)
 AND
 NOT GlobalGetFlag("LLBARTER_PersuasionSharingDisabled", 1)
 AND
@@ -492,7 +511,7 @@ LLBARTER_ApplyPersuasionBonus(_Player, _TargetVal);
 /*
 //Persuasion (Trade) End
 IF
-TradeEnds(_Player, _Trader)
+TradeEnds(_Player, _NPC)
 AND
 NOT GlobalGetFlag("LLBARTER_PersuasionDialogSharingEnabled", 1)
 THEN
@@ -569,13 +588,30 @@ UserClearFlag(_Player, "LLBARTER_PersuasionBonusApplied", 0);
 
 //REGION ATTITUDE_START
 
+QRY
+LLBARTER_QRY_StartSharingAttitude((CHARACTERGUID)_Player)
+AND
+NOT DB_GlobalFlag("LLBARTER_PersuasionDialogSharingEnabled")
+THEN
+DB_NOOP(1);
+
+//No need to wait for persuasion if it's already active
+QRY
+LLBARTER_QRY_StartSharingAttitude((CHARACTERGUID)_Player)
+AND
+DB_GlobalFlag("LLBARTER_PersuasionDialogSharingEnabled")
+AND
+UserGetFlag(_Player, "LLBARTER_PersuasionBonusApplied", 1)
+THEN
+DB_NOOP(1);
+
 //Should fire after adding persuasion
 PROC
 LLBARTER_OnDialogStarted((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC, (STRING)_Dialog, (INTEGER)_Instance)
 AND
 DB_GlobalFlag("LLBARTER_AttitudeSharingEnabled")
 AND
-NOT DB_GlobalFlag("LLBARTER_PersuasionDialogSharingEnabled")
+LLBARTER_QRY_StartSharingAttitude(_Player)
 THEN
 LLBARTER_AttitudeSharing_Start(_Player, _NPC, _Dialog, _Instance);
 
@@ -584,7 +620,7 @@ LLBARTER_OnDialogStarted((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC, (STRING)_D
 AND
 DB_GlobalFlag("LLBARTER_AttitudeSharingEnabled")
 AND
-DB_GlobalFlag("LLBARTER_PersuasionDialogSharingEnabled")
+NOT LLBARTER_QRY_StartSharingAttitude(_Player)
 THEN
 DB_LLBARTER_Temp_ShareAttitude(_Player, _NPC, _Dialog, _Instance);
 
@@ -602,21 +638,41 @@ THEN
 LLBARTER_SharingStarted(_Player, _NPC, _Dialog, _Instance, "Attitude");
 LLBARTER_SetHighestAttitude(_NPC);
 DB_LLBARTER_Temp_AttitudeSharing(_Player, _NPC);
-ProcObjectTimer(_Player, "LLBARTER_Timers_SetAttitudeBoost", 50);
+ProcObjectTimerCancel(_NPC, "LLBARTER_Timers_SetAttitudeBoost");
+ProcObjectTimer(_NPC, "LLBARTER_Timers_SetAttitudeBoost", 50);
 
-PROC
-LLBARTER_OnDialogEnded((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC, (STRING)_Dialog, (INTEGER)_Instance)
+QRY
+LLBARTER_QRY_CanRemoveAttitude((CHARACTERGUID)_Player)
 AND
 NOT DB_GlobalFlag("LLBARTER_PersuasionDialogSharingEnabled")
 THEN
-LLBARTER_RemoveAttitudeBonuses_Start(_Player, _NPC, _Dialog, _Instance);
+DB_NOOP(1);
+
+//No need to wait for persuasion if it's already active
+QRY
+LLBARTER_QRY_CanRemoveAttitude((CHARACTERGUID)_Player)
+AND
+DB_GlobalFlag("LLBARTER_PersuasionDialogSharingEnabled")
+AND
+UserGetFlag(_Player, "LLBARTER_PersuasionBonusApplied", 0)
+THEN
+DB_NOOP(1);
 
 PROC
 LLBARTER_OnDialogEnded((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC, (STRING)_Dialog, (INTEGER)_Instance)
+//AND
+//LLBARTER_QRY_CanRemoveAttitude(_Player)
+THEN
+LLBARTER_RemoveAttitudeBonuses_Start(_Player, _NPC, _Dialog, _Instance);
+
+/*
+PROC
+LLBARTER_OnDialogEnded((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC, (STRING)_Dialog, (INTEGER)_Instance)
 AND
-DB_GlobalFlag("LLBARTER_PersuasionDialogSharingEnabled")
+NOT LLBARTER_QRY_CanRemoveAttitude(_Player)
 THEN
 DB_LLBARTER_Temp_AttitudeRemoval(_Player, _NPC, _Dialog, _Instance);
+*/
 
 PROC
 LLBARTER_RemoveAttitudeBonuses_Start((CHARACTERGUID)_ActivePlayer, (CHARACTERGUID)_NPC, (STRING)_Dialog, (INTEGER)_Instance)
@@ -627,34 +683,18 @@ DB_IsPlayer(_Player)
 AND
 CharacterGetReservedUserID(_Player, _UserID)
 AND
-ObjectGetFlag(_Player, "LLBARTER_AttitudeBoostActive", 1)
-AND
-NOT LLBARTER_QRY_PlayerIsInADifferentDialog(_Player, _ActivePlayer)
-AND
-DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost)
+DB_LLBARTER_Temp_AttitudeBoost(_NPC, _Player, _AttitudeBoost)
 AND
 IntegerProduct(_AttitudeBoost, -1, _RemoveAttitude)
 THEN
-NOT DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost);
-CharacterAddAttitudeTowardsPlayer(_Trader, _Player, _RemoveAttitude);
-ObjectClearFlag(_Player, "LLBARTER_AttitudeBoostActive", 0);
+NOT DB_LLBARTER_Temp_AttitudeBoost(_NPC, _Player, _AttitudeBoost);
+CharacterAddAttitudeTowardsPlayer(_NPC, _Player, _RemoveAttitude);
 LLBARTER_BonusDisabledText(_Player, "Attitude", "FFFFFF");
 
 PROC
 LLBARTER_RemoveAttitudeBonuses_Start((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC, (STRING)_Dialog, (INTEGER)_Instance)
-AND
-UserGetFlag(_Player, "LLBARTER_AttitudeBonusApplied", 1)
 THEN
-UserClearFlag(_Player, "LLBARTER_AttitudeBonusApplied", 0);
 LLBARTER_SharingEnded(_Player, _NPC, _Dialog, _Instance, "Attitude");
-
-PROC
-ProcObjectTimerFinished((CHARACTERGUID)_Player, "LLBARTER_Timers_PersuasionBonusRemoved_RemoveAttitude")
-AND
-DB_LLBARTER_Temp_AttitudeRemoval(_Player, _NPC, _Dialog, _Instance)
-THEN
-NOT DB_LLBARTER_Temp_AttitudeRemoval(_Player, _NPC, _Dialog, _Instance);
-LLBARTER_RemoveAttitudeBonuses_Start(_Player, _NPC, _Dialog, _Instance);
 //END_REGION
 
 //REGION ATTITUDE_SHARING
@@ -671,76 +711,75 @@ THEN
 LLBARTER_ClearSharing("Attitude");
 
 PROC
-ProcObjectTimerFinished((CHARACTERGUID)_Player, "LLBARTER_Timers_SetAttitudeBoost")
+ProcObjectTimerFinished((CHARACTERGUID)_NPC, "LLBARTER_Timers_SetAttitudeBoost")
 AND
-DB_LLBARTER_Temp_AttitudeSharing(_Player, _Trader)
+DB_LLBARTER_Temp_AttitudeSharing(_Player, _NPC)
 THEN
-NOT DB_LLBARTER_Temp_AttitudeSharing(_Player, _Trader);
-CharacterCharacterSetEvent(_Player, _Trader, "LLBARTER_SetAttitudeBoost");
+NOT DB_LLBARTER_Temp_AttitudeSharing(_Player, _NPC);
+LLBARTER_SetAttitudeBoost(_Player, _NPC);
 ProcObjectTimer(_Player, "LLBARTER_Timers_AttitudeBonusSharingFinished", 50);
 
 QRY
-LLBARTER_QRY_SetHighestAttitude((CHARACTERGUID)_Trader)
+LLBARTER_QRY_SetHighestAttitude((CHARACTERGUID)_NPC)
 THEN
-LLBARTER_SetHighestAttitude(_Trader);
+LLBARTER_SetHighestAttitude(_NPC);
 
 PROC
-LLBARTER_SetHighestAttitude((CHARACTERGUID)_Trader)
+LLBARTER_SetHighestAttitude((CHARACTERGUID)_NPC)
 AND
-DB_LLBARTER_Temp_HighestAttitude(_Trader, _HighestPlayer, _Attitude)
+DB_LLBARTER_Temp_HighestAttitude(_NPC, _HighestPlayer, _Attitude)
 THEN
-NOT DB_LLBARTER_Temp_HighestAttitude(_Trader, _HighestPlayer, _Attitude);
+NOT DB_LLBARTER_Temp_HighestAttitude(_NPC, _HighestPlayer, _Attitude);
 
 PROC
-LLBARTER_SetHighestAttitude((CHARACTERGUID)_Trader)
+LLBARTER_SetHighestAttitude((CHARACTERGUID)_NPC)
 THEN
-DB_LLBARTER_Temp_HighestAttitude(_Trader, NULL_00000000-0000-0000-0000-000000000000, 0);
-LLBARTER_GetHighestAttitude(_Trader);
+DB_LLBARTER_Temp_HighestAttitude(_NPC, NULL_00000000-0000-0000-0000-000000000000, 0);
+LLBARTER_GetHighestAttitude(_NPC);
 
 PROC
-LLBARTER_GetHighestAttitude((CHARACTERGUID)_Trader)
+LLBARTER_GetHighestAttitude((CHARACTERGUID)_NPC)
 AND
 DB_IsPlayer(_Player)
 AND
-ObjectGetFlag(_Player, "LLBARTER_AttitudeBoostActive", 0)
+NOT DB_LLBARTER_Temp_AttitudeBoost(_NPC, _Player, _)
 AND
-CharacterGetAttitudeTowardsPlayer(_Trader, _Player, _Attitude)
+CharacterGetAttitudeTowardsPlayer(_NPC, _Player, _Attitude)
 AND
 _Attitude > 0
 AND
-DB_LLBARTER_Temp_HighestAttitude(_Trader, _OtherPlayer, _HighestAttitude)
+DB_LLBARTER_Temp_HighestAttitude(_NPC, _OtherPlayer, _HighestAttitude)
 AND
 _Attitude > _HighestAttitude
 THEN
-NOT DB_LLBARTER_Temp_HighestAttitude(_Trader, _OtherPlayer, _HighestAttitude);
-DB_LLBARTER_Temp_HighestAttitude(_Trader, _Player, _Attitude);
+NOT DB_LLBARTER_Temp_HighestAttitude(_NPC, _OtherPlayer, _HighestAttitude);
+DB_LLBARTER_Temp_HighestAttitude(_NPC, _Player, _Attitude);
 
-IF
-CharacterCharacterEvent(_Player, _Trader, "LLBARTER_SetAttitudeBoost")
+PROC
+LLBARTER_SetAttitudeBoost((CHARACTERGUID)_Player, (CHARACTERGUID)_NPC)
 AND
-DB_LLBARTER_Temp_HighestAttitude(_Trader, _HighestPlayer, _Attitude)
+DB_LLBARTER_Temp_HighestAttitude(_NPC, _HighestPlayer, _Attitude)
 AND
 _Attitude > 0
 AND
 CharacterGetReservedUserID(_Player, _UserID)
 THEN
-LLBARTER_ApplyAttitudeBonusToUser(_Trader, _UserID, _Attitude);
-UserSetFlag(_Player, "LLBARTER_AttitudeBonusApplied");
-NOT DB_LLBARTER_Temp_HighestAttitude(_Trader, _HighestPlayer, _Attitude);
+LLBARTER_ApplyAttitudeBonusToUser(_NPC, _UserID, _Attitude);
+NOT DB_LLBARTER_Temp_HighestAttitude(_NPC, _HighestPlayer, _Attitude);
 
 PROC
-LLBARTER_ApplyAttitudeBonusToUser((CHARACTERGUID)_Trader, (INTEGER)_UserID, (INTEGER)_TargetVal)
+LLBARTER_ApplyAttitudeBonusToUser((CHARACTERGUID)_NPC, (INTEGER)_UserID, (INTEGER)_TargetVal)
 AND
 DB_IsPlayer(_Player)
 AND
 CharacterGetReservedUserID(_Player, _UserID)
 THEN
-LLBARTER_ApplyAttitudeBonus(_Trader, _Player, _TargetVal);
+LLBARTER_ApplyAttitudeBonus(_NPC, _Player, _TargetVal);
 
 PROC
-LLBARTER_ApplyAttitudeBonus((CHARACTERGUID)_Trader, (CHARACTERGUID)_Player, (INTEGER)_TargetVal)
+LLBARTER_ApplyAttitudeBonus((CHARACTERGUID)_NPC, (CHARACTERGUID)_Player, (INTEGER)_TargetVal)
 AND
-CharacterGetAttitudeTowardsPlayer(_Trader, _Player, _StartingVal)
+CharacterGetAttitudeTowardsPlayer(_NPC, _Player, _StartingVal)
 AND
 _TargetVal > _StartingVal
 AND
@@ -748,57 +787,39 @@ _TargetVal > 0
 AND
 IntegerSubtract(_TargetVal, _StartingVal, _AttitudeBoost)
 THEN
-DB_LLBARTER_Temp_TargetAttitude(_Trader, _Player, _StartingVal);
-CharacterAddAttitudeTowardsPlayer(_Trader, _Player, _AttitudeBoost);
-ObjectSetFlag(_Player, "LLBARTER_AttitudeBoostActive", 0);
+DB_LLBARTER_Temp_TargetAttitude(_NPC, _Player, _StartingVal);
+CharacterAddAttitudeTowardsPlayer(_NPC, _Player, _AttitudeBoost);
 LLBARTER_BonusEnabledText(_Player, "Attitude", _AttitudeBoost, "40E0D0");
 
 IF
-CharacterAttitudeTowardsPlayerChanged((CHARACTERGUID)_Trader, (CHARACTERGUID)_Player, (INTEGER)_NewAttitude)
+CharacterAttitudeTowardsPlayerChanged((CHARACTERGUID)_NPC, (CHARACTERGUID)_Player, (INTEGER)_NewAttitude)
 AND
-DB_LLBARTER_Temp_TargetAttitude(_Trader, _Player, _StartingVal)
+DB_LLBARTER_Temp_TargetAttitude(_NPC, _Player, _StartingVal)
 AND
 IntegerSubtract(_NewAttitude, _StartingVal, _AttitudeBoost)
 THEN
-NOT DB_LLBARTER_Temp_TargetAttitude(_Trader, _Player, _StartingVal);
-DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost);
-
-IF
-ObjectFlagCleared("LLBARTER_AttitudeBoostActive", (CHARACTERGUID)_Player, _)
-AND
-DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost)
-THEN
-NOT DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost);
+NOT DB_LLBARTER_Temp_TargetAttitude(_NPC, _Player, _StartingVal);
+DB_LLBARTER_Temp_AttitudeBoost(_NPC, _Player, _AttitudeBoost);
 
 PROC
 LLBARTER_RemoveAttitudeBonusesFromPlayer((CHARACTERGUID)_Player)
 AND
-ObjectGetFlag(_Player, "LLBARTER_AttitudeBoostActive", 1)
-AND
-DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost)
+DB_LLBARTER_Temp_AttitudeBoost(_NPC, _Player, _AttitudeBoost)
 AND
 _AttitudeBoost > 0
 AND
 IntegerProduct(_AttitudeBoost, -1, _RemoveAttitude)
 THEN
-NOT DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost);
-CharacterAddAttitudeTowardsPlayer(_Trader, _Player, _RemoveAttitude);
-ObjectClearFlag(_Player, "LLBARTER_AttitudeBoostActive", 0);
+NOT DB_LLBARTER_Temp_AttitudeBoost(_NPC, _Player, _AttitudeBoost);
+CharacterAddAttitudeTowardsPlayer(_NPC, _Player, _RemoveAttitude);
 LLBARTER_BonusDisabledText(_Player, "Attitude", "FFFFFF");
 
 PROC
 LLBARTER_RemoveAttitudeBonusesFromPlayer((CHARACTERGUID)_Player)
 AND
-DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost)
+DB_LLBARTER_Temp_AttitudeBoost(_NPC, _Player, _AttitudeBoost)
 THEN
-NOT DB_LLBARTER_Temp_AttitudeBoost(_Trader, _Player, _AttitudeBoost);
-
-PROC
-LLBARTER_RemoveAttitudeBonusesFromPlayer((CHARACTERGUID)_Player)
-AND
-UserGetFlag(_Player, "LLBARTER_AttitudeBonusApplied", 1)
-THEN
-UserClearFlag(_Player, "LLBARTER_AttitudeBonusApplied", 0);
+NOT DB_LLBARTER_Temp_AttitudeBoost(_NPC, _Player, _AttitudeBoost);
 //END_REGION
 
 //REGION DUAL_DIALOG_CLEANUP
