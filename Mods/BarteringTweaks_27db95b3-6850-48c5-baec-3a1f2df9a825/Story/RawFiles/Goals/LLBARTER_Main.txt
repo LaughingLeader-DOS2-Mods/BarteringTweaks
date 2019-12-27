@@ -842,7 +842,7 @@ THEN
 ObjectSetFlag(_PartyMember, "LLBARTER_SneakingRemovedByScript");
 RemoveStatus(_PartyMember, "SNEAKING");
 ProcObjectTimer(_PartyMember, "LLBARTER_Timers_ResetSneakingRemovedFlag", 250);
-CharacterStatusText(_PartyMember, "<font color='#00FA9A' size='18'>Sneaking Toggled Off</font>");
+CharacterStatusText(_PartyMember, "LLBARTER_StatusText_SneakingToggledOff");
 //SetStoryEvent(_PartyMember, "LLBARTER_Commands_RemoveSneaking");
 
 PROC
@@ -1340,6 +1340,8 @@ TimerLaunch("LLBARTER_Timers_AddInitialSettingsBook", 500);
 IF
 GameStarted(_Level, _)
 AND
+GlobalGetFlag("LeaderLib_AutoAddModMenuBooksDisabled", 0)
+AND
 IsGameLevel(_Level, 1)
 AND
 NOT DB_GlobalFlag("LLBARTER_AddedInitialSettingsBook")
@@ -1371,7 +1373,7 @@ GetTemplate(_Item, "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb
 AND
 CharacterIsInCombat(_Character, 1)
 THEN
-CharacterStatusText(_Character, "<font color='#FF0000'>*You can't open the settings menu while in combat!*</font>");
+CharacterStatusText(_Character, "LLBARTER_StatusText_SettingsBookBlocked");
 DB_CustomUseItemResponse(_Character, _Item, 0);
 
 IF
@@ -1398,6 +1400,15 @@ DB_LLBARTER_Temp_FlaggedHost(_Host)
 THEN
 UserClearFlag(_Host, "LLBARTER_IsHost", 0);
 NOT DB_LLBARTER_Temp_FlaggedHost(_Host);
+//END_REGION
+
+//REGION LEADERLIB_GLOBAL_SETTINGS
+PROC
+LeaderLib_GlobalSettings_InitModRegistration()
+THEN
+DB_LeaderLib_ModApi_GlobalSettings_Register_Flag("BarteringTweaks", "LaughingLeader", "LLBARTER_BarterSharingDisabled");
+DB_LeaderLib_ModApi_GlobalSettings_Register_Flag("BarteringTweaks", "LaughingLeader", "LLBARTER_PersuasionDialogSharingEnabled");
+DB_LeaderLib_ModApi_GlobalSettings_Register_Flag("BarteringTweaks", "LaughingLeader", "LLBARTER_AttitudeSharingEnabled");
 //END_REGION
 EXITSECTION
 

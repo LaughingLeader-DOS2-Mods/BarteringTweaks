@@ -157,3 +157,4 @@ DB_TUT_PlayOnEasy 1
 DB_LeaderLib_ModApi_RegisterActiveGoal 3
 DB_LeaderLib_Treasure_ItemMaxAmount 3
 DB_LeaderLib_ModMenu_RegisteredMenuData 5
+DB_LeaderLib_ModApi_GlobalSettings_Register_Flag 3
