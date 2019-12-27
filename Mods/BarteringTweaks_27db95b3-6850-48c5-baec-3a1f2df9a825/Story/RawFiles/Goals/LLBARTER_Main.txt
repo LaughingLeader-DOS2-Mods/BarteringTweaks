@@ -1200,10 +1200,10 @@ GameStarted(_Level, _)
 AND
 IsGameLevel(_Level, 1)
 AND
-LLBARTER_Updater_QRY_UpdateNeeded("1.2.2.0")
+LLBARTER_Updater_QRY_UpdateNeeded("1.2.3.0")
 THEN
-LLBARTER_Updater_RemoveOldVersions("1.2.2.0");
-LLBARTER_Updater_SetVersion("1.2.2.0");
+LLBARTER_Updater_RemoveOldVersions("1.2.3.0");
+LLBARTER_Updater_SetVersion("1.2.3.0");
 
 QRY
 LLBARTER_Updater_QRY_UpdateNeeded((STRING)_Version)
