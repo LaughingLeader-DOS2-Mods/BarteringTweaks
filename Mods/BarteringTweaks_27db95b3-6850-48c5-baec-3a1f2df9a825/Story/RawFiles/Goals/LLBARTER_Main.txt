@@ -1406,7 +1406,7 @@ NOT DB_LLBARTER_Temp_FlaggedHost(_Host);
 PROC
 LeaderLib_GlobalSettings_InitModRegistration()
 THEN
-DB_LeaderLib_ModApi_GlobalSettings_Register_Flag("BarteringTweaks", "LaughingLeader", "LLBARTER_BarterSharingDisabled");
+DB_LeaderLib_ModApi_GlobalSettings_Register_Flag("BarteringTweaks", "LaughingLeader", "LLBARTER_BarterSharingDisabled", 1);
 DB_LeaderLib_ModApi_GlobalSettings_Register_Flag("BarteringTweaks", "LaughingLeader", "LLBARTER_PersuasionDialogSharingEnabled");
 DB_LeaderLib_ModApi_GlobalSettings_Register_Flag("BarteringTweaks", "LaughingLeader", "LLBARTER_AttitudeSharingEnabled");
 //END_REGION
