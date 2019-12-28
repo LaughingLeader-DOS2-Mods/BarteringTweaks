@@ -243,10 +243,10 @@ IF
 GlobalFlagSet("LLBARTER_BarterSharingDisabled")
 THEN
 LLBARTER_ClearSharing("Barter");
+LLBARTER_SaveGlobalSettings();
 //END_REGION
 
 //REGION BARTER_SHARING
-
 IF
 GlobalFlagSet("LLBARTER_BarterSharingDisabled")
 AND
@@ -1403,6 +1403,23 @@ NOT DB_LLBARTER_Temp_FlaggedHost(_Host);
 //END_REGION
 
 //REGION LEADERLIB_GLOBAL_SETTINGS
+IF
+GlobalFlagSet("LLBARTER_SaveGlobalSettings")
+THEN
+LLBARTER_SaveGlobalSettings();
+GlobalClearFlag("LLBARTER_SaveGlobalSettings");
+
+PROC
+LLBARTER_SaveGlobalSettings()
+AND
+GlobalGetFlag("LeaderLib_Initialized", 1)
+AND
+GlobalGetFlag("LeaderLib_ExtenderIsActive", 1)
+AND
+CharacterGetHostCharacter(_Host)
+THEN
+SetStoryEvent(_Host, "LeaderLib_Commands_SaveGlobalSettings");
+
 PROC
 LeaderLib_GlobalSettings_InitModRegistration()
 THEN
