@@ -1,0 +1,13 @@
+INIT
+	ITEM:__Me
+	EXTERN STRING:%LLBARTER_TalentBook_UseEvent = "LLBARTER_TalentBookUsed"
+
+EVENTS
+
+EVENT LLBARTER_TalentBook_OnUse
+VARS
+	CHARACTER:_Char
+ON
+	OnUseItem(_Char, __Me)
+ACTIONS
+	CharacterItemEvent(_Char, __Me, %LLBARTER_TalentBook_UseEvent)
