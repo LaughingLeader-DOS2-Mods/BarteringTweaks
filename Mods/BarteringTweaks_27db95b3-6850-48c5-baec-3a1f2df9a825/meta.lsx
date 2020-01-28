@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <save>
     <header version="2" />
     <version major="3" minor="6" revision="6" build="0" />
@@ -9,7 +9,7 @@
                 <node id="ModuleInfo">
                     <attribute id="Author" value="LaughingLeader" type="30" />
                     <attribute id="CharacterCreationLevelName" value="" type="22" />
-                    <attribute id="Description" value="Shares the highest barter and persuasion bonuses among the party while trading. Additionally, BT contains additional quality-of-life tweaks, such as auto-sneaking chained party members when sneaking/unsneaking. If LeaderLib is active, the Bartering Tweaks settings menu is available from the mod menu, otherwise a settings book will be added to the party&apos;s inventory." type="30" />
+                    <attribute id="Description" value="Shares the highest barter and persuasion bonuses among the party while trading. Additionally, BT contains additional quality-of-life tweaks, such as auto-sneaking chained party members when sneaking/unsneaking. If LeaderLib is active, the Bartering Tweaks settings menu is available from the mod menu, otherwise a settings book will be added to the party's inventory." type="30" />
                     <attribute id="DescriptionName" value="LLBARTER_Mod_DisplayName" handle="hf689ebeeg2769g40a5gbd5bg0c38f41fff44" type="28" />
                     <attribute id="DisplayName" value="LLBARTER_Mod_Description" handle="h49fbe69fg7690g4814g8249gb0a64c2aba41" type="28" />
                     <attribute id="Folder" value="BarteringTweaks_27db95b3-6850-48c5-baec-3a1f2df9a825" type="30" />
@@ -24,7 +24,7 @@
                     <attribute id="Tags" value="" type="30" />
                     <attribute id="Type" value="Add-on" type="22" />
                     <attribute id="UUID" value="27db95b3-6850-48c5-baec-3a1f2df9a825" type="22" />
-                    <attribute id="Version" value="302186496" type="4" />
+                    <attribute id="Version" value="318767104" type="4" />
                     <children>
                         <node id="PublishVersion">
                             <attribute id="Version" value="909321303" type="4" />
