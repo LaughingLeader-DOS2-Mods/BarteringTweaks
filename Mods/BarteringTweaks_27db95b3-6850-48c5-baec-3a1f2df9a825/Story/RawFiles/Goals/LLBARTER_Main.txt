@@ -839,7 +839,7 @@ CharacterIsInCombat(_PartyMember, 0)
 AND
 CharactersAreGrouped(_Player, _PartyMember, 1)
 THEN
-ObjectSetFlag(_PartyMember, "LLBARTER_SneakingRemovedByScript");
+ObjectSetFlag(_PartyMember, "LLBARTER_SneakingRemovedByScript", 0);
 RemoveStatus(_PartyMember, "SNEAKING");
 ProcObjectTimer(_PartyMember, "LLBARTER_Timers_ResetSneakingRemovedFlag", 250);
 CharacterStatusText(_PartyMember, "LLBARTER_StatusText_SneakingToggledOff");
@@ -859,21 +859,55 @@ ObjectClearFlag(_Player, "LLBARTER_SneakingRemovedByScript");
 //END_REGION
 
 //REGION PET_PAL
+// [BEGIN_NO_OSITOOLS]
+PROC
+LLBARTER_LearnPetPal((CHARACTERGUID)_Character)
+AND
+SysIsActive("KCE_CoreRules_Story") // Divinity Unleashed
+THEN
+SetTag(_Character,"PETPAL");
+
+PROC
+LLBARTER_LearnPetPal((CHARACTERGUID)_Character)
+AND
+NOT SysIsActive("KCE_CoreRules_Story") // Divinity Unleashed
+THEN
+CharacterAddTalent(_Character, "AnimalEmpathy");
+// [END_NO_OSITOOLS]
+
+/* [OSITOOLS_ONLY]
+PROC
+LLBARTER_LearnPetPal((CHARACTERGUID)_Character)
+AND
+NRD_IsModLoaded(Kalavinkas_Combat_Enhanced_e844229e-b744-4294-9102-a7362a926f71, 1)
+THEN
+SetTag(_Character,"PETPAL");
+
+PROC
+LLBARTER_LearnPetPal((CHARACTERGUID)_Character)
+AND
+NRD_IsModLoaded(Kalavinkas_Combat_Enhanced_e844229e-b744-4294-9102-a7362a926f71, 0)
+THEN
+CharacterAddTalent(_Character, "AnimalEmpathy");
+*/
+
+IF
+CharacterLockedTalent(_Character, "AnimalEmpathy")
+AND
+ObjectGetFlag(_Character, "LLBARTER_LearnedPetPal", 1)
+AND
+IsTagged(_Character, "PETPAL", 0)
+THEN
+SetTag(_Character,"PETPAL");
+
 IF
 CharacterUsedItemTemplate(_Character, "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", _Item)
 AND
-CharacterHasTalent(_Character, "AnimalEmpathy", 0)
-AND
 ObjectGetFlag(_Character, "LLBARTER_LearnedPetPal", 0)
-AND
-GetPosition(_Character, _x, _y, _z)
-AND
-CreateItemTemplateAtPosition("LOOT_BackPack_A_6c70c298-aa29-418f-a659-f8e0b5f5fa60", _x, _y, _z, _Backpack)
 THEN
-ItemToInventory(_Item, _Backpack, 1, 0, 1);
-ItemRemove(_Backpack);
-CharacterAddTalent(_Character, "AnimalEmpathy");
-ObjectSetFlag(_Character, "LLBARTER_LearnedPetPal");
+ItemRemove(_Item);
+LLBARTER_LearnPetPal(_Character);
+ObjectSetFlag(_Character, "LLBARTER_LearnedPetPal", 0);
 PlayEffect(_Character, "LLBARTER_FX_PetPal_Learned_01", "Dummy_StatusFX");
 CharacterStatusText(_Character, "LLBARTER_StatusText_PetPalLearned");
 
@@ -882,23 +916,30 @@ ProcBlockUseOfItem((CHARACTERGUID)_Character, (ITEMGUID)_Item)
 AND
 GetTemplate(_Item, "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77")
 AND
-CharacterHasTalent(_Character, "AnimalEmpathy", 1)
+IsTagged(_Character, "PETPAL", _a)
+AND
+CharacterHasTalent(_Character, "AnimalEmpathy", _b)
+AND
+IntegerMax(_a, _b, 1)
+AND
+ObjectGetFlag(_Character, "LLBARTER_LearnedPetPal", _AlreadyLearned)
 THEN
-CharacterStatusText(_Character, "LLBARTER_StatusText_PetPalAlreadyLearned");
 DB_CustomUseItemResponse(_Character, _Item, 0);
+LLBARTER_OnPetPalBookBlocked(_Character, _AlreadyLearned);
+
 
 //Triggered after the player respecs away their free PetPal talent point.
 PROC
-ProcBlockUseOfItem((CHARACTERGUID)_Character, (ITEMGUID)_Item)
-AND
-GetTemplate(_Item, "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77")
-AND
-CharacterHasTalent(_Character, "AnimalEmpathy", 0)
-AND
-ObjectGetFlag(_Character, "LLBARTER_LearnedPetPal", 1)
+LLBARTER_OnPetPalBookBlocked((CHARACTERGUID)_Character, 1)
 THEN
 CharacterStatusText(_Character, "LLBARTER_StatusText_PetPalLearningFailed");
-DB_CustomUseItemResponse(_Character, _Item, 0);
+
+//Already have PETPAL tag or AnimalEmpathy without the book
+PROC
+LLBARTER_OnPetPalBookBlocked((CHARACTERGUID)_Character, 0)
+THEN
+CharacterStatusText(_Character, "LLBARTER_StatusText_PetPalAlreadyLearned");
+
 //END_REGION
 
 //REGION STATUS_TEXT
