@@ -1493,6 +1493,7 @@ DB_LeaderLib_ModApi_GlobalSettings_Register_Flag("BarteringTweaks", "LaughingLea
 DB_LeaderLib_ModApi_GlobalSettings_Register_Flag("BarteringTweaks", "LaughingLeader", "LLBARTER_PersuasionDialogSharingEnabled");
 DB_LeaderLib_ModApi_GlobalSettings_Register_Flag("BarteringTweaks", "LaughingLeader", "LLBARTER_AttitudeSharingEnabled");
 //END_REGION
+
 EXITSECTION
 
 ENDEXITSECTION
