@@ -925,8 +925,13 @@ IF
 CharacterItemEvent(_Character, _Item, "LLBARTER_PetPalBookUsed")
 AND
 NOT LLBARTER_QRY_PetPalBookBlocked(_Character, _Item)
+AND
+GetPosition(_Character, _x, _y, _z)
+AND
+CreateItemTemplateAtPosition("LOOT_BackPack_A_6c70c298-aa29-418f-a659-f8e0b5f5fa60", _x, _y, _z, _Backpack)
 THEN
-ItemRemove(_Item);
+ItemToInventory(_Item, _Backpack, 1, 0, 1);
+ItemRemove(_Backpack);
 LLBARTER_LearnPetPal(_Character);
 ObjectSetFlag(_Character, "LLBARTER_LearnedPetPal", 0);
 PlayEffect(_Character, "LLBARTER_FX_PetPal_Learned_01", "Dummy_StatusFX");
