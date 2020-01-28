@@ -1,0 +1,6 @@
+new treasuretable "TraderEquipment"
+CanMerge 1
+new subtable "1,1"
+object category "I_BOOK_LLBARTER_PetPalTalentBook",1,1,0,0,0,0,0,0
+new subtable "1,1"
+object category "I_BOOK_LLBARTER_SettingsBook",1,1,0,0,0,0,0,0
