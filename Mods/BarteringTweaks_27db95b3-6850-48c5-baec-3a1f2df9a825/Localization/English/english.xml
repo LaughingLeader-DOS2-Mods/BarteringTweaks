@@ -1,10 +1,11 @@
 <contentList>
 	<content contentuid="h7e5b7260g0016g44c6gb2adg29a798c6bc8f" Source="BOOK_LLBARTER_PetPal">Use to gain the &lt;font color=&apos;#00FF00&apos;&gt;Pet Pal&lt;/font&gt; talent.&lt;br&gt;&lt;font color=&apos;#FF0000&apos;&gt;Can only be learned once!&lt;/font&gt;</content>
-	<content contentuid="h464a9bc4g9425g4c8cg9185gd807cfe3e697" Source="BOOK_LLBARTER_PetPal">&lt;font color=&apos;#40e11e&apos;&gt;How to Speak with Animals&lt;/font&gt;</content>
+	<content contentuid="h464a9bc4g9425g4c8cg9185gd807cfe3e697" Source="BOOK_LLBARTER_PetPal">&lt;font color=&apos;#1fde8f&apos;&gt;How to Speak with Animals&lt;/font&gt;</content>
 	<content contentuid="h75d4f3a7gcdbag4071g8d3cg3c35d3b2f766" Source="BOOK_LLBARTER_PetPal">Learn Talent</content>
 	<content contentuid="h9695e1f8g1758g4c12g9725g26906a932089" Source="BOOK_LLBARTER_PetPal_DivinityUnleashed">Use to gain the &lt;font color=&apos;#00FF00&apos;&gt;Pet Pal&lt;/font&gt; tag, allowing you to talk to animals without the talent.&lt;br&gt;&lt;font color=&apos;#FF0000&apos;&gt;Can only be learned once!&lt;/font&gt;</content>
 	<content contentuid="h5c24b3b2ga86cg4df7g94e1g6d068130e311" Source="BOOK_LLBARTER_PetPal_DivinityUnleashed">Learn Animal Dialect</content>
 	<content contentuid="he36b196eg739bg4ae0gbc6agb9f58081437d" Source="BOOK_LLBARTER_SettingsBook">Use to open the Bartering Tweaks settings menu.</content>
+	<content contentuid="h4bd7feebg4a50g4387ga246gf34222fd6030" Source="BOOK_LLBARTER_SettingsBook">&lt;font color=&apos;#dec01f&apos;&gt;Bartering Tweaks Settings&lt;/font&gt;</content>
 	<content contentuid="h198130bfge365g47ffg9a1cgb221e27a5a6e" Source="BOOK_LLBARTER_SettingsBook">Open Settings Menu</content>
 	<content contentuid="h5d410e95g0f5ag4a26g9127g3dac1ce0cd6e" Source="LLBARTER_SettingsMenu.lsj">[Exit]</content>
 	<content contentuid="h6b723cacg43cbg442ag92b2gc5a0973c068c" Source="LLBARTER_SettingsMenu.lsj">Disable Bartering Sharing</content>
@@ -38,4 +39,6 @@
 	<content contentuid="hcc5e94e1g37f8g4d07ga25dg017fe94fe2dc" Source="LLBARTER_StatusText.lsb" Key="LLBARTER_StatusText_PetPalTagAdded">&lt;font color=&apos;#00FF00&apos;&gt;Animal Language Learned&lt;/font&gt;</content>
 	<content contentuid="he518215bge812g473cg9189g27db4f033a48" Source="LLBARTER_StatusText.lsb" Key="LLBARTER_StatusText_SettingsBookBlocked">&lt;font color=&apos;#FF0000&apos;&gt;*You can&apos;t open the settings menu while in combat!*&lt;/font&gt;</content>
 	<content contentuid="h4d60fab6gbaf3g4f1bgbfd8g76bed411033c" Source="LLBARTER_StatusText.lsb" Key="LLBARTER_StatusText_SneakingToggledOff">&lt;font color=&apos;#00FA9A&apos; size=&apos;18&apos;&gt;Sneaking Toggled Off&lt;/font&gt;</content>
+	<content contentuid="h388036c7ga60ag41a2ga09bg8267dedd4f1d" Source="LLBARTER_Tags.lsb" Key="LLBARTER_PETPAL">Animal Dialect</content>
+	<content contentuid="hb513883cgf1fbg4e5bgbbe9g2154386bb3ba" Source="Tags_Tooltips.lsb" Key="tagkey_LLBARTER_PETPAL">Through knowledge gained from a book, you&apos;re now able to speak to animals.</content>
 </contentList>
