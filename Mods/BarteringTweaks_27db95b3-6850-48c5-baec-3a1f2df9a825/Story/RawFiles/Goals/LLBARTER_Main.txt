@@ -859,12 +859,42 @@ ObjectClearFlag(_Player, "LLBARTER_SneakingRemovedByScript");
 //END_REGION
 
 //REGION PET_PAL
+PROC
+LLBARTER_Updater_VersionChanged(_Version, _NewVersion)
+AND
+DB_IsPlayer(_Player)
+AND
+ObjectGetFlag(_Player, "LLBARTER_LearnedPetPal", 1)
+AND
+IsTagged(_Player, "PETPAL", _a)
+AND
+CharacterHasTalent(_Player, "AnimalEmpathy", _b)
+AND
+IntegerMax(_a, _b, 1)
+THEN
+SetTag(_Player, "LLBARTER_PETPAL");
+
+IF
+ObjectLostTag(_Player, "PETPAL")
+AND
+IsTagged(_Player, "LLBARTER_PETPAL", 1)
+THEN
+ClearTag(_Player, "LLBARTER_PETPAL");
+
+IF
+ObjectWasTagged(_Player, "PETPAL")
+AND
+ObjectGetFlag(_Player, "LLBARTER_LearnedPetPal", 1)
+THEN
+SetTag(_Player, "LLBARTER_PETPAL");
+
 // [BEGIN_NO_OSITOOLS]
 PROC
 LLBARTER_LearnPetPal((CHARACTERGUID)_Character)
 AND
 SysIsActive("KCE_CoreRules_Story") // Divinity Unleashed
 THEN
+SetTag(_Character, "LLBARTER_PETPAL");
 SetTag(_Character,"PETPAL");
 CharacterStatusText(_Character, "LLBARTER_StatusText_PetPalTagAdded");
 
@@ -873,6 +903,7 @@ LLBARTER_LearnPetPal((CHARACTERGUID)_Character)
 AND
 NOT SysIsActive("KCE_CoreRules_Story") // Divinity Unleashed
 THEN
+SetTag(_Character, "LLBARTER_PETPAL");
 CharacterAddTalent(_Character, "AnimalEmpathy");
 CharacterStatusText(_Character, "LLBARTER_StatusText_PetPalLearned");
 // [END_NO_OSITOOLS]
@@ -884,6 +915,7 @@ LLBARTER_LearnPetPal((CHARACTERGUID)_Character)
 AND
 NRD_IsModLoaded(e844229e-b744-4294-9102-a7362a926f71, 1)
 THEN
+SetTag(_Character, "LLBARTER_PETPAL");
 SetTag(_Character,"PETPAL");
 CharacterStatusText(_Character, "LLBARTER_StatusText_PetPalTagAdded");
 
@@ -892,6 +924,7 @@ LLBARTER_LearnPetPal((CHARACTERGUID)_Character)
 AND
 NRD_IsModLoaded(e844229e-b744-4294-9102-a7362a926f71, 0)
 THEN
+SetTag(_Character, "LLBARTER_PETPAL");
 CharacterAddTalent(_Character, "AnimalEmpathy");
 CharacterStatusText(_Character, "LLBARTER_StatusText_PetPalLearned");
 */
