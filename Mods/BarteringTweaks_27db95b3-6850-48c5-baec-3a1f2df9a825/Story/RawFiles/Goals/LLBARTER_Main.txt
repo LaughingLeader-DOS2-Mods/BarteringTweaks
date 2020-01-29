@@ -973,13 +973,13 @@ PlayEffect(_Character, "LLBARTER_FX_PetPal_Learned_01", "Dummy_StatusFX");
 PROC
 LLBARTER_OnPetPalBookBlocked((CHARACTERGUID)_Character, 1)
 THEN
-CharacterStatusText(_Character, "LLBARTER_StatusText_PetPalLearningFailed");
+ShowNotification(_Character, "LLBARTER_StatusText_PetPalLearningFailed");
 
 //Already have PETPAL tag or AnimalEmpathy without the book
 PROC
 LLBARTER_OnPetPalBookBlocked((CHARACTERGUID)_Character, 0)
 THEN
-CharacterStatusText(_Character, "LLBARTER_StatusText_PetPalAlreadyLearned");
+ShowNotification(_Character, "LLBARTER_StatusText_PetPalAlreadyLearned");
 
 /*
 PROC
@@ -1489,16 +1489,6 @@ CharacterIsControlled(_Player, 1)
 THEN
 ItemTemplateAddTo("BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", _Player, 1, 0);
 
-PROC
-ProcBlockUseOfItem(_Character, _Item)
-AND
-GetTemplate(_Item, "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba")
-AND
-CharacterIsInCombat(_Character, 1)
-THEN
-CharacterStatusText(_Character, "LLBARTER_StatusText_SettingsBookBlocked");
-DB_CustomUseItemResponse(_Character, _Item, 0);
-
 IF
 CharacterUsedItemTemplate(_Character, "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", _Item)
 AND
@@ -1507,6 +1497,15 @@ AND
 QRY_SpeakerIsAvailable(_Character)
 THEN
 Proc_StartDialog(0, "LLBARTER_SettingsMenu", _Character, _Character);
+
+IF
+CharacterUsedItemTemplate(_Character, "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", _Item)
+AND
+CharacterIsControlled(_Character, 1)
+AND
+CharacterIsInCombat(_Character, 1)
+THEN
+ShowNotification(_Character, "LLBARTER_StatusText_SettingsBookBlocked");
 
 IF
 DialogStarted("LLBARTER_SettingsMenu", _)

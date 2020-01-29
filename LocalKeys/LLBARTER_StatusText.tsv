@@ -1,9 +1,9 @@
 Key	Content
 LLBARTER_Mod_Description	Shares the highest barter and persuasion bonuses among the party while trading. Additionally, BT contains additional quality-of-life tweaks, such as auto-sneaking chained party members when sneaking/unsneaking. If LeaderLib is active, the Bartering Tweaks settings menu is available from the mod menu, otherwise a settings book will be added to the party&apos;s inventory.
 LLBARTER_Mod_DisplayName	Bartering Tweaks
-LLBARTER_StatusText_PetPalAlreadyLearned	<font color='#FF0000'>*You already know how to speak to animals!*</font>
+LLBARTER_StatusText_PetPalAlreadyLearned	<font color='#FF0000'>You already know how to speak to animals!</font>
 LLBARTER_StatusText_PetPalLearned	<font color='#00FF00'>Pet Pal Learned</font>
-LLBARTER_StatusText_PetPalLearningFailed	<font color='#FF0000'>*You've already redeemed a free Pet Pal talent point!*</font>
+LLBARTER_StatusText_PetPalLearningFailed	<font color='#FF0000'>You've already read this book.</font>
 LLBARTER_StatusText_PetPalTagAdded	<font color='#00FF00'>Animal Language Learned</font>
-LLBARTER_StatusText_SettingsBookBlocked	<font color='#FF0000'>*You can't open the settings menu while in combat!*</font>
+LLBARTER_StatusText_SettingsBookBlocked	<font color='#FF0000'>You can't open the settings menu while in combat!</font>
 LLBARTER_StatusText_SneakingToggledOff	<font color='#00FA9A' size='18'>Sneaking Toggled Off</font>
