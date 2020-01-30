@@ -1,17 +1,34 @@
 treasure itemtypes "Common","Uncommon","Rare","Epic","Legendary","Divine","Unique"
+
 new treasuretable "TraderEquipment"
 CanMerge 1
 new subtable "1,1"
 object category "I_BOOK_LLBARTER_PetPalTalentBook",1,1,0,0,0,0,0,0
 new subtable "1,1"
 object category "I_BOOK_LLBARTER_SettingsBook",1,1,0,0,0,0,0,0
+
 new treasuretable "FTJ_Tinkerer"
 CanMerge 1
 new subtable "1,1"
 object category "I_BOOK_LLBARTER_PetPalTalentBook",1,1,0,0,0,0,0,0
 new subtable "1,1"
 object category "I_BOOK_LLBARTER_SettingsBook",1,1,0,0,0,0,0,0
+
 new treasuretable "RC_DW_Trader_PotionsIngredientsWaterSummonNecro"
+CanMerge 1
+new subtable "1,1"
+object category "I_BOOK_LLBARTER_PetPalTalentBook",1,1,0,0,0,0,0,0
+new subtable "1,1"
+object category "I_BOOK_LLBARTER_SettingsBook",1,1,0,0,0,0,0,0
+
+new treasuretable "COS_Trayde"
+CanMerge 1
+new subtable "1,1"
+object category "I_BOOK_LLBARTER_PetPalTalentBook",1,1,0,0,0,0,0,0
+new subtable "1,1"
+object category "I_BOOK_LLBARTER_SettingsBook",1,1,0,0,0,0,0,0
+
+new treasuretable "ArcherTrader"
 CanMerge 1
 new subtable "1,1"
 object category "I_BOOK_LLBARTER_PetPalTalentBook",1,1,0,0,0,0,0,0
