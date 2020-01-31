@@ -1,0 +1,52 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+
+KBSECTION
+IF
+CharacterUnlockedTalent(_Player,"AnimalEmpathy")
+AND
+ObjectGetFlag(_Player, "LLBARTER_LearnedPetPal", 1)
+THEN
+LLBARTER_PetPal_ToggleTag(_Player);
+
+IF
+CharacterLockedTalent(_Player, "AnimalEmpathy")
+AND
+ObjectGetFlag(_Player, "LLBARTER_LearnedPetPal", 1)
+THEN
+LLBARTER_PetPal_ToggleTag(_Player);
+
+IF
+CharacterCreationFinished(_Player)
+AND
+_Player != NULL_00000000-0000-0000-0000-000000000000
+AND
+ObjectGetFlag(_Player, "LLBARTER_LearnedPetPal", 1)
+THEN
+LLBARTER_PetPal_ToggleTag(_Player);
+
+IF
+ObjectTransformed((CHARACTERGUID)_Player, _)
+AND
+ObjectGetFlag(_Player, "LLBARTER_LearnedPetPal", 1)
+THEN
+LLBARTER_PetPal_ToggleTag(_Player);
+
+IF
+CharacterPolymorphedInto(_Player, _)
+AND
+ObjectGetFlag(_Player, "LLBARTER_LearnedPetPal", 1)
+THEN
+LLBARTER_PetPal_ToggleTag(_Player);
+
+IF
+CharacterStoppedPolymorph(_Player)
+AND
+ObjectGetFlag(_Player, "LLBARTER_LearnedPetPal", 1)
+THEN
+LLBARTER_PetPal_ToggleTag(_Player);
+EXITSECTION
+
+ENDEXITSECTION
+ParentTargetEdge "LLBARTER_Main"
