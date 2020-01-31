@@ -915,7 +915,19 @@ THEN
 LLBARTER_PetPal_ToggleTag(_Player, 1);
 
 PROC
-LLBARTER_PetPal_ToggleTag((CHARACTERGUID)_Player, (INTEGER)_Enabled)
+LLBARTER_PetPal_ToggleTag((CHARACTERGUID)_Player, 0)
+AND
+IsTagged(_Player, "LLBARTER_PETPAL", _a)
+AND
+IsTagged(_Player, "PETPAL", _b)
+AND
+IntegerMax(_a, _b, 1)
+THEN
+ClearTag(_Player,"PETPAL");
+ClearTag(_Player, "LLBARTER_PETPAL");
+
+PROC
+LLBARTER_PetPal_ToggleTag((CHARACTERGUID)_Player, 1)
 AND
 IsTagged(_Player, "LLBARTER_PETPAL", _a)
 AND
@@ -928,17 +940,12 @@ SetTag(_Player, "LLBARTER_PETPAL");
 
 IF
 ObjectLostTag((CHARACTERGUID)_Player, "LLBARTER_PETPAL")
+AND
+DB_LLBARTER_PetPalFriends(_Player)
 THEN
 NOT DB_LLBARTER_PetPalFriends(_Player);
 LLBARTER_PetPal_ToggleTag(_Player);
 LLBARTER_PetPal_CheckDisableToggleScript();
-
-IF
-ObjectWasTagged(_Player, "LLBARTER_PETPAL")
-AND
-IsTagged(_Player, "PETPAL", 0)
-THEN
-SetTag(_Player, "PETPAL");
 
 IF
 ObjectWasTagged((CHARACTERGUID)_Player, "LLBARTER_PETPAL")
@@ -946,6 +953,7 @@ AND
 DB_IsPlayer(_Player)
 THEN
 DB_LLBARTER_PetPalFriends(_Player);
+SetTag(_Player, "PETPAL");
 LLBARTER_PetPal_CheckEnableToggleScript();
 
 PROC
@@ -994,14 +1002,13 @@ LLBARTER_LearnPetPal((CHARACTERGUID)_Character)
 AND
 LLBARTER_QRY_DivinityUnleashedIsActive()
 THEN
-SetTag(_Character, "LLBARTER_PETPAL");
-SetTag(_Character,"PETPAL");
+LLBARTER_PetPal_ToggleTag(_Character, 1);
 CharacterStatusText(_Character, "LLBARTER_StatusText_PetPalTagAdded");
 
 PROC
 LLBARTER_LearnPetPal((CHARACTERGUID)_Character)
 AND
-LLBARTER_QRY_DivinityUnleashedIsActive()
+NOT LLBARTER_QRY_DivinityUnleashedIsActive()
 THEN
 SetTag(_Character, "LLBARTER_PETPAL");
 CharacterAddTalent(_Character, "AnimalEmpathy");
@@ -1368,10 +1375,10 @@ GameStarted(_Level, _)
 AND
 IsGameLevel(_Level, 1)
 AND
-LLBARTER_Updater_QRY_UpdateNeeded("1.3.0.0")
+LLBARTER_Updater_QRY_UpdateNeeded("1.3.1.0")
 THEN
-LLBARTER_Updater_RemoveOldVersions("1.3.0.0");
-LLBARTER_Updater_SetVersion("1.3.0.0");
+LLBARTER_Updater_RemoveOldVersions("1.3.1.0");
+LLBARTER_Updater_SetVersion("1.3.1.0");
 
 QRY
 LLBARTER_Updater_QRY_UpdateNeeded((STRING)_Version)
