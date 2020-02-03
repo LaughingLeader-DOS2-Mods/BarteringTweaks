@@ -1,6 +1,6 @@
 treasure itemtypes "Common","Uncommon","Rare","Epic","Legendary","Divine","Unique"
 
-new treasuretable "TraderEquipment"
+new treasuretable "ST_LeaderLib_LeaderTrader"
 CanMerge 1
 new subtable "1,1"
 object category "I_BOOK_LLBARTER_PetPalTalentBook",1,1,0,0,0,0,0,0
@@ -28,7 +28,7 @@ object category "I_BOOK_LLBARTER_PetPalTalentBook",1,1,0,0,0,0,0,0
 new subtable "1,1"
 object category "I_BOOK_LLBARTER_SettingsBook",1,1,0,0,0,0,0,0
 
-new treasuretable "ArcherTrader"
+new treasuretable "ARX_Trader_Books"
 CanMerge 1
 new subtable "1,1"
 object category "I_BOOK_LLBARTER_PetPalTalentBook",1,1,0,0,0,0,0,0
