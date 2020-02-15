@@ -19,7 +19,7 @@ LLBARTER_Internal_CompleteIfStarted()
 AND
 DB_StoryStarted((INTEGER)_)
 THEN
-DebugBreak("[LLBARTER:CompleteIfStarted] Bartering Tweaks was added to an existing save. Started from the INIT section.");
+DebugBreak("[LLBARTER:CompleteIfStarted] Bartering Tweaks was added to an existing save. Starting from the INIT section.");
 LLBARTER_Internal_Start();
 
 IF

@@ -3,7 +3,7 @@ local function SessionLoading()
 	Ext.Print("[LLBARTER:Bootstrap.lua] Session is loading.")
 end
 
-local ModuleLoad = function ()
+local ModuleLoading = function ()
 	Ext.Print("[LLBARTER:Bootstrap.lua] Module is loading.")
     --Kalavinkas_Combat_Enhanced_e844229e-b744-4294-9102-a7362a926f71
     if Ext.IsModLoaded("e844229e-b744-4294-9102-a7362a926f71") then
@@ -13,10 +13,7 @@ local ModuleLoad = function ()
 		Ext.StatSetAttribute("BOOK_LLBARTER_PetPalTalentBook", "RootTemplate", "f31d4498-59a5-4f04-ba96-89a750111ed7")
 	end
 end
---v36 and higher
-if Ext.RegisterListener ~= nil then
-    --Ext.RegisterListener("SessionLoading", SessionLoading)
-    Ext.RegisterListener("ModuleLoading", ModuleLoad)
-end
+
+Ext.RegisterListener("ModuleLoading", ModuleLoading)
 
 Ext.Print("[LLBARTER:Bootstrap.lua] Finished running.")
