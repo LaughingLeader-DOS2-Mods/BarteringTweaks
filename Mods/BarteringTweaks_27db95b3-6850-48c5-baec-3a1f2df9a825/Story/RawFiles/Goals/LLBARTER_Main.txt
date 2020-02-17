@@ -1619,11 +1619,11 @@ THEN
 SetStoryEvent(_Host, "LeaderLib_Commands_SaveGlobalSettings");
 
 PROC
-LeaderLib_GlobalSettings_InitModRegistration()
+LeaderLib_Mods_OnModRegistered(27db95b3-6850-48c5-baec-3a1f2df9a825, (INTEGER)_Version, (INTEGER)_Major, (INTEGER)_Minor, (INTEGER)_Revision, (INTEGER)_Build)
 THEN
-DB_LeaderLib_ModApi_GlobalSettings_Register_Flag("BarteringTweaks", "LaughingLeader", "LLBARTER_BarterSharingDisabled", 1);
-DB_LeaderLib_ModApi_GlobalSettings_Register_Flag("BarteringTweaks", "LaughingLeader", "LLBARTER_PersuasionDialogSharingEnabled");
-DB_LeaderLib_ModApi_GlobalSettings_Register_Flag("BarteringTweaks", "LaughingLeader", "LLBARTER_AttitudeSharingEnabled");
+DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_BarterSharingDisabled", 1);
+DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_PersuasionDialogSharingEnabled");
+DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_AttitudeSharingEnabled");
 //END_REGION
 
 EXITSECTION
