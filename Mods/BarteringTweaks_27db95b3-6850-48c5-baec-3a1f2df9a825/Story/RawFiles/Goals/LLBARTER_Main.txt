@@ -1423,8 +1423,9 @@ DB_LLBARTER_RegisteredLeaderLibSettings(1);
 IF
 DB_LLBARTER_RegisteredLeaderLibSettings(1)
 THEN
+DB_LeaderUpdater_RegisteredUUID("BarteringTweaks", "LaughingLeader", 27db95b3-6850-48c5-baec-3a1f2df9a825);
 DB_LeaderLib_ModApi_RegisterActiveGoal("BarteringTweaks", "LaughingLeader", "LLBARTER_Main");
-DB_LeaderLib_ModApi_RegisterMenu("LaughingLeader.BarteringTweaks", "[Bartering Tweaks] Settings", "LLBARTER_SettingsMenu", "BarteringTweaks", "LaughingLeader");
+DB_LeaderLib_ModApi_RegisterMenu("27db95b3-6850-48c5-baec-3a1f2df9a825", "LLBARTER_SettingsMenu", "[Bartering Tweaks] Settings");
 
 DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", 1, "");
 DB_LeaderLib_Treasure_ItemMaxAmount("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", 1);
