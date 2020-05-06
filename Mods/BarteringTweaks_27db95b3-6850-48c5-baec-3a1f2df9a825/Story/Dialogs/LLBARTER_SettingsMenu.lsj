@@ -46,7 +46,7 @@
                                           "TagText" : [
                                              {
                                                 "TagText" : {
-                                                   "handle" : "ls::TranslatedStringRepository::s_HandleUnknown",
+                                                   "handle" : "h81ae6116gafc1g4901g94dcg458502903055",
                                                    "type" : 28,
                                                    "value" : "[GLOBAL] Make the Pet Pal Talent Book grant the Pet Pal talent instead."
                                                 },
@@ -1745,7 +1745,7 @@
                                           "TagText" : [
                                              {
                                                 "TagText" : {
-                                                   "handle" : "ls::TranslatedStringRepository::s_HandleUnknown",
+                                                   "handle" : "h4417ab1dg9be7g4f78gb0a1g80065d0b23f8",
                                                    "type" : 28,
                                                    "value" : "[GLOBAL] Make the Pet Pal Talent Book only grant the Pet Pal tag. (Default)"
                                                 },
@@ -2257,9 +2257,9 @@
                                           "TagText" : [
                                              {
                                                 "TagText" : {
-                                                   "handle" : "ls::TranslatedStringRepository::s_HandleUnknown",
+                                                   "handle" : "h8cfcd159g4ed9g4e6ag8e39g955e68e45ad9",
                                                    "type" : 28,
-                                                   "value" : "[GLOBAL] Prevent all Bartering Tweaks books from spawning on non-LeaderLib traders. <br><b>Warning</b>: If you enable this and lose your book, you're on your own!"
+                                                   "value" : "[GLOBAL] Prevent all Bartering Tweaks books from spawning on non-LeaderLib traders. <br><b>Warning</b>: If you enable this and lose your book, you're on your own! (Books Currently Enabled)"
                                                 },
                                                 "stub" : {"type" : 19, "value" : 1}
                                              }
@@ -2373,9 +2373,9 @@
                                           "TagText" : [
                                              {
                                                 "TagText" : {
-                                                   "handle" : "ls::TranslatedStringRepository::s_HandleUnknown",
+                                                   "handle" : "hc1e76394gfcf1g45f5g912dg5fa80811e69a",
                                                    "type" : 28,
-                                                   "value" : "[GLOBAL] Allow all Bartering Tweaks books to spawn on non-LeaderLib traders. (Default)"
+                                                   "value" : "[GLOBAL] Allow all Bartering Tweaks books to spawn on non-LeaderLib traders. (Books Current Disabled)"
                                                 },
                                                 "stub" : {"type" : 19, "value" : 1}
                                              }
@@ -3913,7 +3913,7 @@
          },
          "editorData" : {
             "needLayout" : {"type" : 19, "value" : 0},
-            "nextNodeId" : {"type" : 5, "value" : 136}
+            "nextNodeId" : {"type" : 5, "value" : 143}
          }
       }
    }

@@ -1,4 +1,6 @@
 {
+    "RequiredExtensionVersion": 43,
+    "ModTable": "BarteringTweaks",
     "FeatureFlags": [
         "OsirisExtensions",
         "Lua",
