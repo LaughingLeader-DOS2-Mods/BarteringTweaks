@@ -1362,11 +1362,15 @@ CharacterLaunchOsirisOnlyIterator("Iterator_LLBARTER_CheckBooks");
 QRY
 LLBARTER_QRY_CanDeleteBooks((CHARACTERGUID)_Char)
 AND
+_Char != CHARACTERGUID_S_LeaderLib_LeaderTrader_61ae5acc-1537-4970-82bb-d408a3334574
+AND
 NOT DB_IsPlayer(_Char)
 AND
 NOT DB_Origins(_Char)
 AND
 CharacterIsPlayer(_Char, 0)
+AND
+CharacterGameMaster(_Char, 0)
 THEN
 DB_NOOP(1);
 

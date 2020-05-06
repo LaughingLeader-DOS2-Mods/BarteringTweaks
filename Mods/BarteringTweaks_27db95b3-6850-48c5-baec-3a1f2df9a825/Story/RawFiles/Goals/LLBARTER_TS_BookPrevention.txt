@@ -1,0 +1,29 @@
+Version 1
+SubGoalCombiner SGC_AND
+INITSECTION
+
+KBSECTION
+IF
+ItemTemplateAddedToCharacter(BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77, _Book, _Char)
+AND
+LLBARTER_QRY_CanDeleteBooks(_Char)
+THEN
+ItemRemove(_Book);
+
+IF
+ItemTemplateAddedToCharacter(BOOK_LLBARTER_PetPal_DivinityUnleashed_f31d4498-59a5-4f04-ba96-89a750111ed7, _Book, _Char)
+AND
+LLBARTER_QRY_CanDeleteBooks(_Char)
+THEN
+ItemRemove(_Book);
+
+IF
+ItemTemplateAddedToCharacter(BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba, _Book, _Char)
+AND
+LLBARTER_QRY_CanDeleteBooks(_Char)
+THEN
+ItemRemove(_Book);
+EXITSECTION
+
+ENDEXITSECTION
+ParentTargetEdge "LLBARTER_Main"
