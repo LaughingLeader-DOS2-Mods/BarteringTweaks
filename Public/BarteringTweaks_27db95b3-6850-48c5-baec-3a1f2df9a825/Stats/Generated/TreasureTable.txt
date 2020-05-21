@@ -1,6 +1,6 @@
 treasure itemtypes "Common","Uncommon","Rare","Epic","Legendary","Divine","Unique"
 
-new treasuretable "BarteringTweaks_Books"
+new treasuretable "ST_BarteringTweaks_Books"
 new subtable "1,1"
 object category "I_BOOK_LLBARTER_PetPalTalentBook",1,0,0,0,0,0,0,1
 new subtable "1,1"
@@ -9,24 +9,24 @@ object category "I_BOOK_LLBARTER_SettingsBook",1,0,0,0,0,0,0,1
 new treasuretable "ST_LeaderLib_LeaderTrader"
 CanMerge 1
 new subtable "1,1"
-object category "T_BarteringTweaks_Books",1,0,0,0,0,0,0,0
+object category "T_ST_BarteringTweaks_Books",1,0,0,0,0,0,0,0
 
 new treasuretable "FTJ_Tinkerer"
 CanMerge 1
 new subtable "1,1"
-object category "T_BarteringTweaks_Books",1,0,0,0,0,0,0,0
+object category "T_ST_BarteringTweaks_Books",1,0,0,0,0,0,0,0
 
 new treasuretable "RC_DW_Trader_PotionsIngredientsWaterSummonNecro"
 CanMerge 1
 new subtable "1,1"
-object category "T_BarteringTweaks_Books",1,0,0,0,0,0,0,0
+object category "T_ST_BarteringTweaks_Books",1,0,0,0,0,0,0,0
 
 new treasuretable "COS_Trayde"
 CanMerge 1
 new subtable "1,1"
-object category "T_BarteringTweaks_Books",1,0,0,0,0,0,0,0
+object category "T_ST_BarteringTweaks_Books",1,0,0,0,0,0,0,0
 
 new treasuretable "ARX_Trader_Books"
 CanMerge 1
 new subtable "1,1"
-object category "T_BarteringTweaks_Books",1,0,0,0,0,0,0,0
+object category "T_ST_BarteringTweaks_Books",1,0,0,0,0,0,0,0
