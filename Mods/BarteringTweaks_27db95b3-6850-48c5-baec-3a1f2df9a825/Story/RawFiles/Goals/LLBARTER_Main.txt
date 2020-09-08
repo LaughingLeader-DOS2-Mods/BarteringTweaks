@@ -883,18 +883,18 @@ ObjectFlagSet("LLBARTER_SneakingTweaksDisabled", (CHARACTERGUID)_Speaker, _)
 AND
 CharacterGetReservedUserID(_Speaker, _User)
 AND
-GetUserName(_User, _Name)
+GetUserProfileID(_User, _ID)
 THEN
-NRD_ModCall("BarteringTweaks", "SetSneakingTweaksDisabled", _Name);
+NRD_ModCall("BarteringTweaks", "SetSneakingTweaksDisabled", _ID);
 
 IF
 ObjectFlagCleared("LLBARTER_SneakingTweaksDisabled", (CHARACTERGUID)_Speaker, _)
 AND
 CharacterGetReservedUserID(_Speaker, _User)
 AND
-GetUserName(_User, _Name)
+GetUserProfileID(_User, _ID)
 THEN
-NRD_ModCall("BarteringTweaks", "SetSneakingTweaksEnabled", _Name);
+NRD_ModCall("BarteringTweaks", "SetSneakingTweaksEnabled", _ID);
 */
 //END_REGION
 

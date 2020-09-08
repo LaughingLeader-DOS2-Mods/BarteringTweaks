@@ -11,15 +11,15 @@ if Ext.IsModLoaded("7e737d2f-31d2-4751-963f-be6ccc59cd0c") then
 
 end
 
-function SetSneakingTweaksDisabled(username)
+function SetSneakingTweaksDisabled(id)
 	if settings ~= nil then
-		settings.Global.Flags.LLBARTER_SneakingTweaksDisabled.Targets[username] = true
+		settings.Global.Flags.LLBARTER_SneakingTweaksDisabled.Targets[id] = true
 	end
 end
 
-function SetSneakingTweaksEnabled(username)
+function SetSneakingTweaksEnabled(id)
 	if settings ~= nil then
-		settings.Global.Flags.LLBARTER_SneakingTweaksDisabled.Targets[username] = nil
+		settings.Global.Flags.LLBARTER_SneakingTweaksDisabled.Targets[id] = nil
 	end
 end
 
