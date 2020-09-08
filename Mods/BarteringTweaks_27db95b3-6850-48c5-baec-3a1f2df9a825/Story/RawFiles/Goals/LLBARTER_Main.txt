@@ -334,22 +334,10 @@ SetStoryEvent(_Player, "LLBARTER_Commands_ApplyBarteringBonus");
 LLBARTER_BonusEnabledText(_Player, "Bartering", _BonusVal, "FFD700");
 LLBARTER_OnSharedBarterBonus(_Player, _BonusVal);
 
-// [BEGIN_NO_OSITOOLS]
 PROC
 LLBARTER_OnSharedBarterBonus((CHARACTERGUID)_Player, (INTEGER)_Amount)
 THEN
 DB_NOOP(1);
-// [END_NO_OSITOOLS]
-/* [OSITOOLS_ONLY]
-PROC
-LLBARTER_OnSharedBarterBonus((CHARACTERGUID)_Player, (INTEGER)_Amount)
-AND
-GetUUID(_Player, _UUID)
-AND
-IntegertoString(_Amount, _AmountStr)
-THEN
-NRD_ModCall("BarteringTweaks", "FixDiscountText", _UUID, _AmountStr);
-*/
 
 PROC
 LLBARTER_RemoveBarterBonuses((CHARACTERGUID)_UserPlayer)
@@ -1762,6 +1750,21 @@ NRD_ModCall("BarteringTweaks", "ClearOldGlobalSettings");
 */
 //END_REGION
 
+//REGION TRADE_WINDOW_TEXT
+/* [OSITOOLS_ONLY]
+PROC
+ProcObjectTimerFinished((CHARACTERGUID)_Char, "Timers_LLBARTER_UI_FixDiscountText")
+AND
+GetUUID(_Char, _UUID)
+THEN
+NRD_ModCall("BarteringTweaks", "FixDiscountText", _UUID);
+
+IF
+TimerFinished("Timers_LLBARTER_UI_FixDiscountText")
+THEN
+NRD_ModCall("BarteringTweaks", "FixDiscountText");
+*/
+//END_REGION
 EXITSECTION
 
 ENDEXITSECTION

@@ -37,9 +37,59 @@ function SetSneakingTweaksEnabled(id)
 	end
 end
 
+local function CalculateDiscount(barter, attitude)
+	--TODO
+	local aCo = Ext.ExtraData.PriceAttitudeCoefficient or 1.0
+	local bCo = Ext.ExtraData.PriceBarterCoefficient or 1.0
 
-function FixDiscountText(uuid, amount)
-	Ext.PostMessageToClient(uuid, "LLBARTER_FixDiscountText", amount)
+	local repEffect = attitude * aCo
+	local barterEffet = barter * bCo
+
+	local priceModDiff = Ext.ExtraData.PriceModClassicDifficulty or 1.0
+	priceModDiff = (priceModDiff - barterEffet) - repEffect
+	-- Get party -> get NPC data for party?
+
+	return priceModDiff
+end
+
+local function GetBarteringData(player, trader)
+	local barter = Ext.GetCharacter(player).Stats.Barter
+	local attitude = CharacterGetAttitudeTowardsPlayer(trader, player)
+	local discount = CalculateDiscount(barter, attitude)
+
+	local data = {
+		Player = GetUUID(player),
+		Trader = GetUUID(trader),
+		TraderName = Ext.GetCharacter(trader).DisplayName,
+		Barter = barter,
+		Attitude = attitude,
+		Discount = discount
+	}
+
+	return data
+end
+
+Ext.RegisterOsirisListener("RequestTrade", 2, "after", function(player, trader)
+	local data = GetBarteringData(player, trader)
+	Ext.PostMessageToClient(player, "LLBARTER_StoreDiscountText", Ext.JsonStringify(data))
+end)
+
+Ext.RegisterListener("LLBARTER_StartDiscountFixTimer", function(cmd, uuid)
+	if uuid ~= nil then
+		Osi.ProcObjectTimerCancel(uuid, "Timers_LLBARTER_UI_FixDiscountText")
+		Osi.ProcObjectTimer(uuid, "Timers_LLBARTER_UI_FixDiscountText", 50)
+	else
+		TimerCancel("Timers_LLBARTER_UI_FixDiscountText")
+		TimerLaunch("Timers_LLBARTER_UI_FixDiscountText", 50)
+	end
+end)
+
+function FixDiscountText(uuid)
+	if uuid ~= nil then
+		Ext.PostMessageToClient(uuid, "LLBARTER_FixDiscountText", "")
+	else
+		Ext.BroadcastMessage("LLBARTER_FixDiscountText", "", nil)
+	end
 end
 
 function ClearOldGlobalSettings()
