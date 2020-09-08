@@ -1,16 +1,18 @@
 <contentList>
+	<content contentuid="h045a58b0gf123g4352g9873g4cf99e2f3bc6">User Settings</content>
 	<content contentuid="h0b86c384g548ag4dfeg9395g19d5e69caed7">&lt;font color=&apos;#00FF00&apos;&gt;Pet Pal Learned&lt;/font&gt;</content>
 	<content contentuid="h16fc361agf51bg4e7dga8e3g491976d74822">Bartering Tweaks Features</content>
 	<content contentuid="h198130bfge365g47ffg9a1cgb221e27a5a6e">Open Settings Menu</content>
 	<content contentuid="h2c7cd0b9gb387g41d2ga797gcf4e1167a813">&lt;font color=&apos;#FF0000&apos;&gt;You&apos;ve already read this book.&lt;/font&gt;</content>
 	<content contentuid="h388036c7ga60ag41a2ga09bg8267dedd4f1d">Animal Dialect</content>
 	<content contentuid="h3b08e163gf5c8g4f5aga4cag238ac3abbb62">&lt;font color=&apos;#FF0000&apos;&gt;You already know how to speak to animals!&lt;/font&gt;</content>
+	<content contentuid="h402e4fecgbdabg47b9g86f2gec7ba315ce34">[GLOBAL] Disable one-button sneaking for all the party members under your control. This must be enabled globally by the host, under the Features menu. (Currently Enabled)</content>
 	<content contentuid="h4417ab1dg9be7g4f78gb0a1g80065d0b23f8">[GLOBAL] Make the Pet Pal Talent Book only grant the Pet Pal tag. (Default)</content>
 	<content contentuid="h464a9bc4g9425g4c8cg9185gd807cfe3e697">&lt;font color=&apos;#1fde8f&apos;&gt;How to Speak with Animals&lt;/font&gt;</content>
 	<content contentuid="h49fbe69fg7690g4814g8249gb0a64c2aba41">Bartering Tweaks</content>
 	<content contentuid="h4bd7feebg4a50g4387ga246gf34222fd6030">&lt;font color=&apos;#dec01f&apos;&gt;Bartering Tweaks Settings&lt;/font&gt;</content>
 	<content contentuid="h4d60fab6gbaf3g4f1bgbfd8g76bed411033c">&lt;font color=&apos;#00FA9A&apos; size=&apos;18&apos;&gt;Sneaking Toggled Off&lt;/font&gt;</content>
-	<content contentuid="h5a80d6bfg3709g49d7gabb4gff57f8be71b0">Enable One-Button Party Sneaking - If you sneak, all chained characters you own will sneak as well (outside of combat). Manually disable sneak, and your characters will stop sneaking too.</content>
+	<content contentuid="h5a80d6bfg3709g49d7gabb4gff57f8be71b0">[GLOBAL] Globally enable one-button party sneaking - If you sneak, all chained characters you own will sneak as well (outside of combat). Manually disable sneak, and your characters will stop sneaking too. (Currently Disabled for All Players)</content>
 	<content contentuid="h5d410e95g0f5ag4a26g9127g3dac1ce0cd6e">[Exit]</content>
 	<content contentuid="h68ac66a8g86d3g4c91g84a7gb432d5a819c4">Debug Settings</content>
 	<content contentuid="h6b723cacg43cbg442ag92b2gc5a0973c068c">Disable Bartering Sharing</content>
@@ -24,9 +26,9 @@
 	<content contentuid="h92d5313bgb438g4d0dgb0f5g1ccf4fc578db">Remove All Active Bonuses</content>
 	<content contentuid="h9695e1f8g1758g4c12g9725g26906a932089">Read to study ancient techniques used to speak with animals.&lt;br&gt;&lt;font color=&apos;#FF0000&apos;&gt;Can only be learned once!&lt;/font&gt;&lt;br&gt;&lt;font color=&apos;#00FF00&apos; size=&apos;14&apos;&gt;Grants the Pet Pal tag.&lt;/font&gt;</content>
 	<content contentuid="h96d22adag76b8g48f2g8edfg0bfddfc6c358">Disable Attitude Sharing</content>
-	<content contentuid="ha368acfcge2a9g47beg8360gcc11409adf0e">*Note: Some settings are only available to the host user.*</content>
 	<content contentuid="ha408b330g028fg42f5g9d3fg49299143999a">Bartering Tweaks Commands</content>
 	<content contentuid="hab74f69cgea56g4691ga52bgca80313b5c14">Party Persuasion</content>
+	<content contentuid="hb2794c83gbd17g4defg96dbg5d2c7f215890">[GLOBAL] Enable one-button sneaking for all the party members under your control. This must be enabled globally by the host, under the Features menu. (Currently Disabled)&lt;br&gt;</content>
 	<content contentuid="hb513883cgf1fbg4e5bgbbe9g2154386bb3ba">Through knowledge gained from a book, you&apos;re now able to speak to animals.</content>
 	<content contentuid="hb6eda308gb670g4a4dg875cg1ccf228b7e33">Enable Attitude Sharing - When attitude is increased, the party is brought up to the same amount.</content>
 	<content contentuid="hbc2075bcg8d1dg4de1g97b7g908abaf09148">Settings updated.</content>
@@ -40,8 +42,9 @@
 	<content contentuid="hdf5ecbfag5b14g4a92g8c01g7fce4cc1caa6">Enable Bartering Sharing</content>
 	<content contentuid="he36b196eg739bg4ae0gbc6agb9f58081437d">Use to open the Bartering Tweaks settings menu.</content>
 	<content contentuid="he518215bge812g473cg9189g27db4f033a48">&lt;font color=&apos;#FF0000&apos;&gt;You can&apos;t open the settings menu while in combat!&lt;/font&gt;</content>
-	<content contentuid="hf34850f8ge168g4129gb760gbf5f23965e72">Disable One-Button Party Sneaking for User-Owned Characters</content>
+	<content contentuid="hf34850f8ge168g4129gb760gbf5f23965e72">[GLOBAL] Globally disable one-button party sneaking for all players. (Currently Enabled for All Players)</content>
 	<content contentuid="hf6327d65g6b96g4f54g9f45ge5cc94256ac8">Disable Bonus Status Text. When bonuses are applied/removed, you&apos;ll no longer see corresponding status texts displayed above all associated characters.</content>
 	<content contentuid="hf689ebeeg2769g40a5gbd5bg0c38f41fff44">Shares the highest barter and persuasion bonuses among the party while trading. Additionally, BT contains additional quality-of-life tweaks, such as auto-sneaking chained party members when sneaking/unsneaking. If LeaderLib is active, the Bartering Tweaks settings menu is available from the mod menu, otherwise a settings book will be added to the party&amp;apos;s inventory.</content>
 	<content contentuid="hf764d431gf86bg4aedg9277gaf07ca83cc82">[Back]</content>
+	<content contentuid="hfde6dc87g3600g492agb6f1ga6f9c45a37dc">One-button sneaking is not enabled globally, so this setting will not take effect until the host enables this feature.</content>
 </contentList>
