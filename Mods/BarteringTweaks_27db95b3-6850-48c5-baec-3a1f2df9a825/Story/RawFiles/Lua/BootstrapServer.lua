@@ -43,16 +43,24 @@ function FixDiscountText(uuid, amount)
 end
 
 function ClearOldGlobalSettings()
-	Osi.DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag:Delete("27db95b3-6850-48c5-baec-3a1f2df9a825", nil)
-	Osi.DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag:Delete("27db95b3-6850-48c5-baec-3a1f2df9a825", nil, nil)
-	Osi.DB_LeaderLib_GlobalSettings_GlobalFlags:Delete("27db95b3-6850-48c5-baec-3a1f2df9a825", nil, nil)
+	local b,result = xpcall(function()
+		Osi.DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag:Delete("27db95b3-6850-48c5-baec-3a1f2df9a825", nil)
+		Osi.DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag:Delete("27db95b3-6850-48c5-baec-3a1f2df9a825", nil, nil)
+		Osi.DB_LeaderLib_GlobalSettings_GlobalFlags:Delete("27db95b3-6850-48c5-baec-3a1f2df9a825", nil, nil)
+	end, debug.traceback)
+	if not b then
+		Ext.PrintError("[BarteringTweaks:ClearOldGlobalSettings] Error:")
+		Ext.PrintError(result)
+	end
 end
+
+local defaultDropCount = {{Chance=1,Amount=1}}
 
 ---@type StatTreasureSubTable
 local EnabledBooksSubtables = {
 	{
 		Amounts = {1},
-		DropCounts = {1},
+		DropCounts = defaultDropCount,
 		Categories = {
 			{
 				Frequency = 1,
@@ -65,7 +73,7 @@ local EnabledBooksSubtables = {
 	},
 	{
 		Amounts = {1},
-		DropCounts = {1},
+		DropCounts = defaultDropCount,
 		Categories = {
 			{
 				Frequency = 1,
@@ -74,15 +82,27 @@ local EnabledBooksSubtables = {
 			}
 		},
 		TotalCount = 1,
-		TotalFrequency = 1
+		TotalFrequency = 2
 	}
 }
 
 function DisableBookTreasure()
 	local stat = Ext.GetTreasureTable("ST_BarteringTweaks_Books")
 	if stat ~= nil then
-		stat.SubTables = nil
-		print(stat, stat.SubTables, stat.Name)
+		stat.SubTables = {
+			{
+				Amounts = {1},
+				DropCounts = defaultDropCount,
+				Categories = {
+					{
+						Frequency = 1,
+						TreasureCategory = "Gold",
+					},
+				},
+				TotalCount = 1,
+				TotalFrequency = 1
+			},
+		}
 		Ext.UpdateTreasureTable(stat)
 	end
 end
