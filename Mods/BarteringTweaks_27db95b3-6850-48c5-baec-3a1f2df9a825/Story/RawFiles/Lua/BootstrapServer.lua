@@ -1,12 +1,26 @@
-Ext.Require("StatOverrides.lua")
+Ext.Require("Shared.lua")
 
 ---@type ModSettings
 local settings = nil
 -- LeaderLib
 if Ext.IsModLoaded("7e737d2f-31d2-4751-963f-be6ccc59cd0c") then
-	settings = Ext.Require("LeaderLibSettings.lua")
 	Ext.RegisterListener("SessionLoaded", function()
-		Mods.LeaderLib.SettingsManager.AddSettings(settings)
+		local LeaderLib = Mods.LeaderLib
+		local Classes = LeaderLib.Classes
+	
+		---@type ModSettings
+		local ModSettings = Classes.ModSettingsClasses.ModSettings
+		settings = ModSettings:Create("27db95b3-6850-48c5-baec-3a1f2df9a825")
+		settings.Global:AddFlags({
+			"LLBARTER_BarterSharingDisabled",
+			"LLBARTER_PersuasionDialogSharingEnabled",
+			"LLBARTER_AttitudeSharingEnabled",
+			"LLBARTER_PetPalTagModeDisabled",
+			"LLBARTER_SneakingTweaksEnabled",
+			"LLBARTER_PreventTraderBooksEnabled",
+		})
+		settings.Global:AddFlag("LLBARTER_SneakingTweaksDisabled", "User", false)
+		LeaderLib.SettingsManager.AddSettings(settings)
 	end)
 
 end
@@ -31,7 +45,6 @@ end
 function ClearOldGlobalSettings()
 	Osi.DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag:Delete("27db95b3-6850-48c5-baec-3a1f2df9a825", nil)
 	Osi.DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag:Delete("27db95b3-6850-48c5-baec-3a1f2df9a825", nil, nil)
-	Osi.DB_LeaderLib_GlobalSettings_GlobalFlags:Delete("27db95b3-6850-48c5-baec-3a1f2df9a825", nil)
 	Osi.DB_LeaderLib_GlobalSettings_GlobalFlags:Delete("27db95b3-6850-48c5-baec-3a1f2df9a825", nil, nil)
 end
 
@@ -69,6 +82,7 @@ function DisableBookTreasure()
 	local stat = Ext.GetTreasureTable("ST_BarteringTweaks_Books")
 	if stat ~= nil then
 		stat.SubTables = nil
+		print(stat, stat.SubTables, stat.Name)
 		Ext.UpdateTreasureTable(stat)
 	end
 end

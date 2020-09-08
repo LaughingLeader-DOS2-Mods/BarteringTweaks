@@ -1,4 +1,4 @@
-Ext.Require("StatOverrides.lua")
+Ext.Require("Shared.lua")
 
 local function FixDiscountText(amount)
 	local ui = Ext.GetBuiltinUI("Public/Game/GUI/trade.swf")
