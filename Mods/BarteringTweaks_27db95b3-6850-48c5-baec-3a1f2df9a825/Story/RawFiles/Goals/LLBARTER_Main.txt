@@ -724,7 +724,7 @@ CharacterIsInCombat(_Player, 0)
 AND
 GlobalGetFlag("LLBARTER_SneakingTweaksEnabled", 1)
 AND
-NOT UserGetFlag(_Player, "LLBARTER_SneakingTweaksDisabled", 1)
+UserGetFlag(_Player, "LLBARTER_SneakingTweaksDisabled", 0)
 AND
 CharacterGetReservedUserID(_Player, _UserID)
 THEN
