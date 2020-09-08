@@ -3,6 +3,7 @@ SubGoalCombiner SGC_AND
 INITSECTION
 
 KBSECTION
+// [BEGIN_NO_OSITOOLS]
 IF
 ItemTemplateAddedToCharacter(BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77, _Book, _Char)
 AND
@@ -23,6 +24,7 @@ AND
 LLBARTER_QRY_CanDeleteBooks(_Char)
 THEN
 ItemRemove(_Book);
+// [END_NO_OSITOOLS]
 EXITSECTION
 
 ENDEXITSECTION

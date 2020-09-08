@@ -1645,7 +1645,7 @@
                                  {
                                     "flag" : [
                                        {
-                                          "name" : {"type" : 22, "value" : "LLBARTER_SneakingTweaksDisabled"},
+                                          "name" : {"type" : 22, "value" : "LLBARTER_SneakingTweaksEnabled"},
                                           "paramval" : {"type" : 4, "value" : 0},
                                           "value" : {"type" : 19, "value" : 1}
                                        }
@@ -1702,7 +1702,7 @@
                                  {
                                     "flag" : [
                                        {
-                                          "name" : {"type" : 22, "value" : "LLBARTER_SneakingTweaksDisabled"},
+                                          "name" : {"type" : 22, "value" : "LLBARTER_SneakingTweaksEnabled"},
                                           "paramval" : {"type" : 4, "value" : 0},
                                           "value" : {"type" : 19, "value" : 0}
                                        }
@@ -3217,7 +3217,7 @@
                                  {
                                     "flag" : [
                                        {
-                                          "name" : {"type" : 22, "value" : "LLBARTER_SneakingTweaksDisabled"},
+                                          "name" : {"type" : 22, "value" : "LLBARTER_SneakingTweaksEnabled"},
                                           "paramval" : {"type" : 4, "value" : 0},
                                           "value" : {"type" : 19, "value" : 0}
                                        }
@@ -3274,7 +3274,7 @@
                                  {
                                     "flag" : [
                                        {
-                                          "name" : {"type" : 22, "value" : "LLBARTER_SneakingTweaksDisabled"},
+                                          "name" : {"type" : 22, "value" : "LLBARTER_SneakingTweaksEnabled"},
                                           "paramval" : {"type" : 4, "value" : 0},
                                           "value" : {"type" : 19, "value" : 1}
                                        }

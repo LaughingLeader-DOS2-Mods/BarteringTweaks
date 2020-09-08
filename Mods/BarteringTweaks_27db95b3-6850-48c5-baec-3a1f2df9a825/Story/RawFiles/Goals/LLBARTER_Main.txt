@@ -332,6 +332,24 @@ UserSetFlag(_Player, "LLBARTER_BarterBonusActive", 0);
 SetVarInteger(_Player, "LLBARTER_BarterBonus", _BonusVal);
 SetStoryEvent(_Player, "LLBARTER_Commands_ApplyBarteringBonus");
 LLBARTER_BonusEnabledText(_Player, "Bartering", _BonusVal, "FFD700");
+LLBARTER_OnSharedBarterBonus(_Player, _BonusVal);
+
+// [BEGIN_NO_OSITOOLS]
+PROC
+LLBARTER_OnSharedBarterBonus((CHARACTERGUID)_Player, (INTEGER)_Amount)
+THEN
+DB_NOOP(1);
+// [END_NO_OSITOOLS]
+/* [OSITOOLS_ONLY]
+PROC
+LLBARTER_OnSharedBarterBonus((CHARACTERGUID)_Player, (INTEGER)_Amount)
+AND
+GetUUID(_Player, _UUID)
+AND
+IntegertoString(_Amount, _AmountStr)
+THEN
+NRD_ModCall("BarteringTweaks", "FixDiscountText", _UUID, _AmountStr);
+*/
 
 PROC
 LLBARTER_RemoveBarterBonuses((CHARACTERGUID)_UserPlayer)
@@ -588,9 +606,9 @@ DB_GlobalFlag("LLBARTER_AttitudeSharingEnabled")
 AND
 _NewAttitude > 0
 AND
-NOT DB_LLBARTER_Temp_JustSharedAttitude(_Player)
+NOT DB_LLBARTER_Temp_JustSharedAttitude(_Player, _)
 THEN
-DB_LLBARTER_Temp_JustSharedAttitude(_Player);
+DB_LLBARTER_Temp_JustSharedAttitude(_Player, _NewAttitude);
 ProcObjectTimer(_Player, "LLBARTER_Timers_ClearJustSharedAttitude", 100);
 LLBARTER_ShareAttitudeBoostWithParty(_Player, _NPC, _NewAttitude);
 
@@ -615,7 +633,7 @@ DB_IsPlayer(_Player)
 AND
 _SharingPlayer != _Player
 AND
-NOT DB_LLBARTER_Temp_JustSharedAttitude(_Player)
+NOT DB_LLBARTER_Temp_JustSharedAttitude(_Player, _)
 AND
 CharacterIsInPartyWith(_Player, _SharingPlayer, 1)
 AND
@@ -634,7 +652,7 @@ IntegerSubtract(_NewAttitude, _Current, _AddAttitude)
 AND
 _AddAttitude > 0
 THEN
-DB_LLBARTER_Temp_JustSharedAttitude(_Player);
+DB_LLBARTER_Temp_JustSharedAttitude(_Player, _AddAttitude);
 CharacterAddAttitudeTowardsPlayer(_NPC, _Player, _AddAttitude);
 LLBARTER_AttitudeSharedText(_Player, _AddAttitude, "40E0D0");
 ProcObjectTimer(_Player, "LLBARTER_Timers_ClearJustSharedAttitude", 50);
@@ -642,9 +660,9 @@ ProcObjectTimer(_Player, "LLBARTER_Timers_ClearJustSharedAttitude", 50);
 PROC
 ProcObjectTimerFinished((CHARACTERGUID)_Player, "LLBARTER_Timers_ClearJustSharedAttitude")
 AND
-DB_LLBARTER_Temp_JustSharedAttitude(_Player)
+DB_LLBARTER_Temp_JustSharedAttitude(_Player, _AddAttitude)
 THEN
-NOT DB_LLBARTER_Temp_JustSharedAttitude(_Player);
+NOT DB_LLBARTER_Temp_JustSharedAttitude(_Player, _AddAttitude);
 
 PROC
 LLBARTER_AttitudeSharedText((CHARACTERGUID)_Player, (INTEGER)_BonusVal, (STRING)_FontColor)
@@ -704,13 +722,15 @@ CharacterIsControlled(_Player, 1)
 AND
 CharacterIsInCombat(_Player, 0)
 AND
+GlobalGetFlag("LLBARTER_SneakingTweaksEnabled", 1)
+AND
 NOT UserGetFlag(_Player, "LLBARTER_SneakingTweaksDisabled", 1)
 AND
 CharacterGetReservedUserID(_Player, _UserID)
 THEN
-ObjectClearFlag(_Player, "LLBARTER_SneakingRemovedByScript");
-UserSetFlag(_Player, "LLBARTER_PartySneakEnabled", 0);
 DB_LLBARTER_Temp_ApplyingPartySneak(_Player, _UserID);
+ObjectClearFlag(_Player, "LLBARTER_SneakingRemovedByScript", 0);
+UserSetFlag(_Player, "LLBARTER_PartySneakEnabled", 0);
 IterateParty(_Player, "LLBARTER_OnIterate_ApplySneaking");
 ProcObjectTimer(_Player, "LLBARTER_Timers_ResetApplyingPartySneakDatabase", 500);
 
@@ -856,6 +876,26 @@ PROC
 ProcObjectTimerFinished((CHARACTERGUID)_Player, "LLBARTER_Timers_ResetSneakingRemovedFlag")
 THEN
 ObjectClearFlag(_Player, "LLBARTER_SneakingRemovedByScript");
+
+/* [OSITOOLS_ONLY]
+IF
+ObjectFlagSet("LLBARTER_SneakingTweaksDisabled", (CHARACTERGUID)_Speaker, _)
+AND
+CharacterGetReservedUserID(_Speaker, _User)
+AND
+GetUserName(_User, _Name)
+THEN
+NRD_ModCall("BarteringTweaks", "SetSneakingTweaksDisabled", _Name);
+
+IF
+ObjectFlagCleared("LLBARTER_SneakingTweaksDisabled", (CHARACTERGUID)_Speaker, _)
+AND
+CharacterGetReservedUserID(_Speaker, _User)
+AND
+GetUserName(_User, _Name)
+THEN
+NRD_ModCall("BarteringTweaks", "SetSneakingTweaksEnabled", _Name);
+*/
 //END_REGION
 
 //REGION PET_PAL_TAG
@@ -1343,13 +1383,7 @@ DebugBreak(_Str);
 //END_REGION
 
 //REGION BOOK_PREVENTION
-IF
-GlobalFlagSet("LLBARTER_PreventTraderBooksEnabled")
-AND
-NOT SysIsActive("LLBARTER_TS_BookPrevention")
-THEN
-SysActivateGoal("LLBARTER_TS_BookPrevention");
-
+// [BEGIN_NO_OSITOOLS]
 IF
 GlobalFlagSet("LLBARTER_PreventTraderBooksEnabled")
 AND
@@ -1358,6 +1392,8 @@ AND
 IsGameLevel(_Level, 1)
 THEN
 CharacterLaunchOsirisOnlyIterator("Iterator_LLBARTER_CheckBooks");
+// [END_NO_OSITOOLS]
+
 
 QRY
 LLBARTER_QRY_CanDeleteBooks((CHARACTERGUID)_Char)
@@ -1388,12 +1424,33 @@ StoryEvent((ITEMGUID)_Book, "Iterator_LLBARTER_DeleteBook")
 THEN
 ItemRemove(_Book);
 
+// [BEGIN_NO_OSITOOLS]
+IF
+GlobalFlagSet("LLBARTER_PreventTraderBooksEnabled")
+AND
+NOT SysIsActive("LLBARTER_TS_BookPrevention")
+THEN
+SysActivateGoal("LLBARTER_TS_BookPrevention");
+// [END_NO_OSITOOLS]
+
 IF
 GlobalFlagCleared("LLBARTER_PreventTraderBooksEnabled")
 AND
 SysIsActive("LLBARTER_TS_BookPrevention")
 THEN
 SysCompleteGoal("LLBARTER_TS_BookPrevention");
+
+/* [OSITOOLS_ONLY]
+IF
+GlobalFlagSet("LLBARTER_PreventTraderBooksEnabled")
+THEN
+NRD_ModCall("BarteringTweaks", "DisableBookTreasure");
+
+IF
+GlobalFlagCleared("LLBARTER_PreventTraderBooksEnabled")
+THEN
+NRD_ModCall("BarteringTweaks", "EnableBookTreasure");
+*/
 //END_REGION
 
 //REGION SETTINGS
@@ -1666,8 +1723,8 @@ NOT DB_LLBARTER_Temp_FlaggedHost(_Host);
 IF
 GlobalFlagSet("LLBARTER_SaveGlobalSettings")
 THEN
-LLBARTER_SaveGlobalSettings();
 GlobalClearFlag("LLBARTER_SaveGlobalSettings");
+LLBARTER_SaveGlobalSettings();
 
 PROC
 LLBARTER_SaveGlobalSettings()
@@ -1680,24 +1737,29 @@ CharacterGetHostCharacter(_Host)
 THEN
 SetStoryEvent(_Host, "LeaderLib_Commands_SaveGlobalSettings");
 
-PROC
-LeaderLib_Mods_OnModRegistered(27db95b3-6850-48c5-baec-3a1f2df9a825, (INTEGER)_Version, (INTEGER)_Major, (INTEGER)_Minor, (INTEGER)_Revision, (INTEGER)_Build)
-THEN
-DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_BarterSharingDisabled", 1);
-DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_PersuasionDialogSharingEnabled");
-DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_AttitudeSharingEnabled");
-DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_PetPalTagModeDisabled", 1);
-DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_SneakingTweaksDisabled", 1);
-DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_PreventTraderBooksEnabled", 1);
+// PROC
+// LeaderLib_Mods_OnModRegistered(27db95b3-6850-48c5-baec-3a1f2df9a825, (INTEGER)_Version, (INTEGER)_Major, (INTEGER)_Minor, (INTEGER)_Revision, (INTEGER)_Build)
+// THEN
+// DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_BarterSharingDisabled", 1);
+// DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_PersuasionDialogSharingEnabled");
+// DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_AttitudeSharingEnabled");
+// DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_PetPalTagModeDisabled", 1);
+// DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_SneakingTweaksEnabled", 1);
+// DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_PreventTraderBooksEnabled", 1);
 
+/* [OSITOOLS_ONLY]
 PROC
 LeaderLib_Mods_OnVersionChanged(27db95b3-6850-48c5-baec-3a1f2df9a825, (INTEGER)_LastVersion, (INTEGER)_NextVersion)
 AND
-_LastVersion < 318898177
+_LastVersion < 319029248
+AND
+DB_IsPlayer(_PLayer)
+AND
+NOT UserGetFlag(_PLayer, "LLBARTER_SneakingTweaksDisabled", 1)
 THEN
-DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_PetPalTagModeDisabled", 1);
-DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_SneakingTweaksDisabled", 1);
-DB_LeaderLib_ModApi_GlobalSettings_Register_GlobalFlag(27db95b3-6850-48c5-baec-3a1f2df9a825, "LLBARTER_PreventTraderBooksEnabled", 1);
+GlobalSetFlag("LLBARTER_SneakingTweaksEnabled");
+NRD_ModCall("BarteringTweaks", "ClearOldGlobalSettings");
+*/
 //END_REGION
 
 EXITSECTION
