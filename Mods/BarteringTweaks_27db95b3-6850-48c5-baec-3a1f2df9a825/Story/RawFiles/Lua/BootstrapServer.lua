@@ -37,19 +37,28 @@ function SetSneakingTweaksEnabled(id)
 	end
 end
 
-local function CalculateDiscount(barter, attitude)
-	--TODO
-	local aCo = Ext.ExtraData.PriceAttitudeCoefficient or 1.0
-	local bCo = Ext.ExtraData.PriceBarterCoefficient or 1.0
+local function CalculateDiscount(party, barter, attitude)
+	local PriceAttitudeCoefficient = Ext.ExtraData.PriceAttitudeCoefficient or 1.0
+	local PriceBarterCoefficient = Ext.ExtraData.PriceBarterCoefficient or 1.0
 
-	local repEffect = attitude * aCo
-	local barterEffet = barter * bCo
+	local reputationEffect = attitude * PriceAttitudeCoefficient
+	local barterEffect = barter * PriceBarterCoefficient
 
-	local priceModDiff = Ext.ExtraData.PriceModClassicDifficulty or 1.0
-	priceModDiff = (priceModDiff - barterEffet) - repEffect
+	local PriceModDifficulty = Ext.ExtraData.PriceModClassicDifficulty or 1.0
+	--TODO: Get the difficulty. We have no way to do this as of 9/8/2020
+	if IsHardcoreMode() == 1 then
+		PriceModDifficulty = Ext.ExtraData.PriceModHardcoreDifficulty or 1.0
+	end
+	PriceModDifficulty = (PriceModDifficulty - barterEffect) - reputationEffect
+
+	--TODO: Get price tag modifiers and whatever esv::Party::GetNPCDataFor returns
+	local PriceModDifficulty2 = math.max(PriceModDifficulty, 1.0)
+	--local GlobalPriceModifier = GetGlobalPriceModifier()
+	--local result = Ext.Round(ApplyPriceTagModifiers(party, PriceModDifficulty2))
+
 	-- Get party -> get NPC data for party?
 
-	return priceModDiff
+	return PriceModDifficulty
 end
 
 local function GetBarteringData(player, trader)
@@ -69,26 +78,42 @@ local function GetBarteringData(player, trader)
 	return data
 end
 
-Ext.RegisterOsirisListener("RequestTrade", 2, "after", function(player, trader)
-	local data = GetBarteringData(player, trader)
-	Ext.PostMessageToClient(player, "LLBARTER_StoreDiscountText", Ext.JsonStringify(data))
-end)
+-- Ext.RegisterOsirisListener("RequestTrade", 2, "after", function(player, trader)
+-- 	local data = GetBarteringData(player, trader)
+-- 	Ext.PostMessageToClient(player, "LLBARTER_StoreDiscountText", Ext.JsonStringify(data))
+-- end)
 
-Ext.RegisterListener("LLBARTER_StartDiscountFixTimer", function(cmd, uuid)
-	if uuid ~= nil then
+local function PartyIsSharingBonuses()
+	for i,db in pairs(Osi.DB_IsPlayer:Get(nil)) do
+		if UserGetFlag(db[1], "LLBARTER_BarterBonusActive") == 1 then
+			return true
+		elseif UserGetFlag(db[1], "LLBARTER_PersuasionBonusApplied") == 1 then
+			return true
+		end
+	end
+	return false
+end
+
+Ext.RegisterNetListener("LLBARTER_StartDiscountFixTimer", function(cmd, uuid)
+	print(cmd, uuid)
+	if uuid ~= nil and uuid ~= "" and ObjectExists(uuid) == 1 then
 		Osi.ProcObjectTimerCancel(uuid, "Timers_LLBARTER_UI_FixDiscountText")
 		Osi.ProcObjectTimer(uuid, "Timers_LLBARTER_UI_FixDiscountText", 50)
 	else
 		TimerCancel("Timers_LLBARTER_UI_FixDiscountText")
-		TimerLaunch("Timers_LLBARTER_UI_FixDiscountText", 50)
+		TimerLaunch("Timers_LLBARTER_UI_FixDiscountText", 250)
 	end
 end)
 
 function FixDiscountText(uuid)
-	if uuid ~= nil then
-		Ext.PostMessageToClient(uuid, "LLBARTER_FixDiscountText", "")
+	if PartyIsSharingBonuses() then
+		if uuid ~= nil then
+			Ext.PostMessageToClient(uuid, "LLBARTER_FixDiscountText", "")
+		else
+			Ext.BroadcastMessage("LLBARTER_FixDiscountText", "", nil)
+		end
 	else
-		Ext.BroadcastMessage("LLBARTER_FixDiscountText", "", nil)
+		Ext.Print("Skipping discount fix")
 	end
 end
 
