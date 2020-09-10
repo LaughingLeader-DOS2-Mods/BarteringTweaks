@@ -70,26 +70,26 @@ Ext.RegisterNetListener("LLBARTER_StoreDiscountText", function(cmd, datastr)
 	barterData = Ext.JsonParse(datastr)
 end)
 
-Ext.RegisterListener("SessionLoaded", function()
-	---@param ui UIObject
-	Ext.RegisterUITypeInvokeListener(46, "setTooltip", function(ui, method, index, text)
-		print(method, index, text)
-		if index == 0 and text ~= nil and text ~= "" then
-			-- local uuid = ""
-			-- if barterData ~= nil and barterData.Player ~= nil then
-			-- 	uuid = barterData.Player
-			-- end
-			--Ext.PostMessageToServer("LLBARTER_StartDiscountFixTimer", "")
-		end
-	end)
-	Ext.RegisterUITypeInvokeListener(46, "updateCharList", function(ui, method, ...)
-		print(method, Ext.JsonStringify({...}))
-		Ext.PostMessageToServer("LLBARTER_StartDiscountFixTimer", "")
-	end)
-	Ext.RegisterUITypeInvokeListener(46, "addTraderTab", function(ui, ...)
-		print(Ext.JsonStringify({...}))
-	end)
-	Ext.RegisterUITypeInvokeListener(46, "addTab", function(ui, ...)
-		print(Ext.JsonStringify({...}))
-	end)
-end)
+-- Ext.RegisterListener("SessionLoaded", function()
+-- 	---@param ui UIObject
+-- 	Ext.RegisterUITypeInvokeListener(46, "setTooltip", function(ui, method, index, text)
+-- 		print(method, index, text)
+-- 		if index == 0 and text ~= nil and text ~= "" then
+-- 			-- local uuid = ""
+-- 			-- if barterData ~= nil and barterData.Player ~= nil then
+-- 			-- 	uuid = barterData.Player
+-- 			-- end
+-- 			--Ext.PostMessageToServer("LLBARTER_StartDiscountFixTimer", "")
+-- 		end
+-- 	end)
+-- 	Ext.RegisterUITypeInvokeListener(46, "updateCharList", function(ui, method, ...)
+-- 		print(method, Ext.JsonStringify({...}))
+-- 		Ext.PostMessageToServer("LLBARTER_StartDiscountFixTimer", "")
+-- 	end)
+-- 	Ext.RegisterUITypeInvokeListener(46, "addTraderTab", function(ui, ...)
+-- 		print(Ext.JsonStringify({...}))
+-- 	end)
+-- 	Ext.RegisterUITypeInvokeListener(46, "addTab", function(ui, ...)
+-- 		print(Ext.JsonStringify({...}))
+-- 	end)
+-- end)
