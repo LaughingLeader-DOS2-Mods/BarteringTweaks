@@ -22,7 +22,6 @@ if Ext.IsModLoaded("7e737d2f-31d2-4751-963f-be6ccc59cd0c") then
 		settings.Global:AddFlag("LLBARTER_SneakingTweaksDisabled", "User", false)
 		LeaderLib.SettingsManager.AddSettings(settings)
 	end)
-
 end
 
 function SetSneakingTweaksDisabled(id)
@@ -179,6 +178,7 @@ function DisableBookTreasure()
 			},
 		}
 		Ext.UpdateTreasureTable(stat)
+		Ext.Print("[BarteringTweaks] Disabled treasure table for BT books.")
 	end
 end
 
