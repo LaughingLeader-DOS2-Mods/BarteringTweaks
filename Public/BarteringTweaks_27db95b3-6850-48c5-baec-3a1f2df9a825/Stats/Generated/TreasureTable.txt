@@ -8,7 +8,7 @@ object category "I_BOOK_LLBARTER_SettingsBook",1,0,0,0,0,0,0,1
 
 new treasuretable "ST_LeaderLib_LeaderTrader"
 CanMerge 1
-new subtable "1,1"
+new subtable "2,1"
 object category "I_BOOK_LLBARTER_PetPalTalentBook",1,0,0,0,0,0,0,1
 new subtable "1,1"
 object category "I_BOOK_LLBARTER_SettingsBook",1,0,0,0,0,0,0,1
