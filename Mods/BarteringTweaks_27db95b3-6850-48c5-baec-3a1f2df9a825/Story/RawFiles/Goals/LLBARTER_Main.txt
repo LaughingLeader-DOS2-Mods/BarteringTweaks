@@ -1533,14 +1533,6 @@ DB_LeaderUpdater_RegisteredUUID("BarteringTweaks", "LaughingLeader", 27db95b3-68
 DB_LeaderLib_ModApi_RegisterActiveGoal("BarteringTweaks", "LaughingLeader", "LLBARTER_Main");
 DB_LeaderLib_ModApi_RegisterMenu("27db95b3-6850-48c5-baec-3a1f2df9a825", "LLBARTER_SettingsMenu", "[Bartering Tweaks] Settings");
 
-DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", 1, "");
-DB_LeaderLib_Treasure_ItemMaxAmount("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", 1);
-
-// [BEGIN_NO_OSITOOLS]
-DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4, "");
-DB_LeaderLib_Treasure_ItemMaxAmount("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4);
-// [END_NO_OSITOOLS]
-
 /* [OSITOOLS_ONLY]
 //Kalavinkas_Combat_Enhanced_e844229e-b744-4294-9102-a7362a926f71
 IF
@@ -1559,7 +1551,6 @@ THEN
 DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4, "");
 DB_LeaderLib_Treasure_ItemMaxAmount("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4);
 */
-
 
 IF
 GameStarted(_Level,_)
@@ -1748,6 +1739,16 @@ THEN
 GlobalSetFlag("LLBARTER_SneakingTweaksEnabled");
 NRD_ModCall("BarteringTweaks", "ClearOldGlobalSettings");
 */
+
+PROC
+LeaderLib_Mods_OnVersionChanged(27db95b3-6850-48c5-baec-3a1f2df9a825, (INTEGER)_LastVersion, (INTEGER)_NextVersion)
+AND
+_LastVersion < 319029249
+THEN
+NOT DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", 1, "");
+NOT DB_LeaderLib_Treasure_ItemMaxAmount("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_SettingsBook_a2cdd305-1f92-4b1d-8a98-6e406decb7ba", 1);
+NOT DB_LeaderLib_Treasure_TreasureItemTemplates("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4, "");
+NOT DB_LeaderLib_Treasure_ItemMaxAmount("LeaderLib.LeaderTrader.ModBooks", "BOOK_LLBARTER_PetPal_6d71b1e0-4150-47fe-bc77-83d9b3efcb77", 4);
 //END_REGION
 
 //REGION TRADE_WINDOW_TEXT
