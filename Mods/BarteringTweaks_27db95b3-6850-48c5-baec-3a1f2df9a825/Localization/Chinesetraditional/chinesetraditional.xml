@@ -5,38 +5,52 @@
 	<content contentuid="h198130bfge365g47ffg9a1cgb221e27a5a6e">Open Settings Menu</content>
 	<content contentuid="h2c7cd0b9gb387g41d2ga797gcf4e1167a813">&lt;font color=&apos;#FF0000&apos;&gt;You&apos;ve already read this book.&lt;/font&gt;</content>
 	<content contentuid="h388036c7ga60ag41a2ga09bg8267dedd4f1d">Animal Dialect</content>
+	<content contentuid="h392d6343g7cf5g48ecg8496gcbad8b652d4e">If Sneaking Tweaks is globally enabled, this will disable it for all characters you control.</content>
 	<content contentuid="h3b08e163gf5c8g4f5aga4cag238ac3abbb62">&lt;font color=&apos;#FF0000&apos;&gt;You already know how to speak to animals!&lt;/font&gt;</content>
 	<content contentuid="h402e4fecgbdabg47b9g86f2gec7ba315ce34">[GLOBAL] Disable one-button sneaking for all the party members under your control. This must be enabled globally by the host, under the Features menu. (Currently Enabled)</content>
 	<content contentuid="h4417ab1dg9be7g4f78gb0a1g80065d0b23f8">[GLOBAL] Make the Pet Pal Talent Book only grant the Pet Pal tag. (Default)</content>
 	<content contentuid="h464a9bc4g9425g4c8cg9185gd807cfe3e697">&lt;font color=&apos;#1fde8f&apos;&gt;How to Speak with Animals&lt;/font&gt;</content>
 	<content contentuid="h49fbe69fg7690g4814g8249gb0a64c2aba41">Bartering Tweaks</content>
+	<content contentuid="h4ae9bdfdgc4c3g4bf6gad29g96762eee9e20">The Pet Pal book will add Pet Pal tag instead of the actual talent, unless this is disabled. If disabled, the talent will be added instead.</content>
 	<content contentuid="h4bd7feebg4a50g4387ga246gf34222fd6030">&lt;font color=&apos;#dec01f&apos;&gt;Bartering Tweaks Settings&lt;/font&gt;</content>
 	<content contentuid="h4d60fab6gbaf3g4f1bgbfd8g76bed411033c">&lt;font color=&apos;#00FA9A&apos; size=&apos;18&apos;&gt;Sneaking Toggled Off&lt;/font&gt;</content>
 	<content contentuid="h5a80d6bfg3709g49d7gabb4gff57f8be71b0">[GLOBAL] Globally enable one-button party sneaking - If you sneak, all chained characters you own will sneak as well (outside of combat). Manually disable sneak, and your characters will stop sneaking too. (Currently Disabled for All Players)</content>
 	<content contentuid="h5d410e95g0f5ag4a26g9127g3dac1ce0cd6e">[Exit]</content>
 	<content contentuid="h68ac66a8g86d3g4c91g84a7gb432d5a819c4">Debug Settings</content>
 	<content contentuid="h6b723cacg43cbg442ag92b2gc5a0973c068c">Disable Bartering Sharing</content>
+	<content contentuid="h6e27d963g5443g4653g90abgb7faff42a272">Prevent Bartering Tweaks Books</content>
+	<content contentuid="h73352d34g8b96g43d5ga66bgbc2e1905b849">Enable Sneaking Tweaks</content>
 	<content contentuid="h75d4f3a7gcdbag4071g8d3cg3c35d3b2f766">Learn Animal Dialect</content>
 	<content contentuid="h7e5b7260g0016g44c6gb2adg29a798c6bc8f">Read to study ancient techniques used to speak with animals.&lt;br&gt;&lt;font color=&apos;#FF0000&apos;&gt;Can only be learned once!&lt;/font&gt;&lt;br&gt;&lt;font color=&apos;#00FF00&apos; size=&apos;14&apos;&gt;Grants the Pet Pal talent or tag, depending on your Bartering Tweaks settings..&lt;/font&gt;</content>
 	<content contentuid="h80d37377ga633g4ef9ga001g39caeb817e89">Running command...</content>
 	<content contentuid="h81ae6116gafc1g4901g94dcg458502903055">[GLOBAL] Make the Pet Pal Talent Book grant the Pet Pal talent instead.</content>
+	<content contentuid="h8262bcb9g879eg4194g9445g2aced28eba05">If enabled, users can enable one-click sneaking for chained party members, allowing you to sneak/unsneak all connected characters with a single action.</content>
 	<content contentuid="h85f3bfeagedc6g44beg877dgf616ecc6c48b">Disable Persuasion Sharing</content>
 	<content contentuid="h8cfcd159g4ed9g4e6ag8e39g955e68e45ad9">[GLOBAL] Prevent all Bartering Tweaks books from spawning on non-LeaderLib traders. &lt;br&gt;&lt;b&gt;Warning&lt;/b&gt;: If you enable this and lose your book, you&apos;re on your own! (Books Currently Enabled)</content>
 	<content contentuid="h8e5edd43g7373g456bgbf84g61d6d7881b67">Enable Persuasion Sharing (Dialog &amp; Trade)&lt;br&gt;</content>
 	<content contentuid="h92d5313bgb438g4d0dgb0f5g1ccf4fc578db">Remove All Active Bonuses</content>
+	<content contentuid="h95f5c196g2f27g4dc1gaf19g41f957d155fc">Disable automatically sharing the Barter civil ability with the party.</content>
 	<content contentuid="h9695e1f8g1758g4c12g9725g26906a932089">Read to study ancient techniques used to speak with animals.&lt;br&gt;&lt;font color=&apos;#FF0000&apos;&gt;Can only be learned once!&lt;/font&gt;&lt;br&gt;&lt;font color=&apos;#00FF00&apos; size=&apos;14&apos;&gt;Grants the Pet Pal tag.&lt;/font&gt;</content>
 	<content contentuid="h96d22adag76b8g48f2g8edfg0bfddfc6c358">Disable Attitude Sharing</content>
+	<content contentuid="h97034417gbc24g4ecdgb850gcd2286656a4f">Share attitude gains between all party members.</content>
 	<content contentuid="ha408b330g028fg42f5g9d3fg49299143999a">Bartering Tweaks Commands</content>
 	<content contentuid="hab74f69cgea56g4691ga52bgca80313b5c14">Party Persuasion</content>
+	<content contentuid="haee696e5g735ag4757g8365g54b435c5ef71">Share Attitude Bonuses</content>
 	<content contentuid="hb2794c83gbd17g4defg96dbg5d2c7f215890">[GLOBAL] Enable one-button sneaking for all the party members under your control. This must be enabled globally by the host, under the Features menu. (Currently Disabled)&lt;br&gt;</content>
 	<content contentuid="hb513883cgf1fbg4e5bgbbe9g2154386bb3ba">Through knowledge gained from a book, you&apos;re now able to speak to animals.</content>
+	<content contentuid="hb68ac019g21e6g4488g92c6gc00942d719c1">Prevent Bartering Tweaks books from appearing in traders.</content>
 	<content contentuid="hb6eda308gb670g4a4dg875cg1ccf228b7e33">Enable Attitude Sharing - When attitude is increased, the party is brought up to the same amount.</content>
 	<content contentuid="hbc2075bcg8d1dg4de1g97b7g908abaf09148">Settings updated.</content>
 	<content contentuid="hbd0c705cg709bg4180g979dgdab80958deae">Party Bartering</content>
 	<content contentuid="hbf69bc05gb0b3g4686g8a1cgce80c902aac5">Enable Bonus Status Text. When bonuses are applied/removed, you&apos;ll see corresponding status texts displayed above all associated characters.</content>
 	<content contentuid="hc1e76394gfcf1g45f5g912dg5fa80811e69a">[GLOBAL] Allow all Bartering Tweaks books to spawn on non-LeaderLib traders. (Books Current Disabled)</content>
+	<content contentuid="hc9d44b25g6b66g4da3g9627gc1c12fc5efa2">Automatically share persuasion when dialog starts.</content>
 	<content contentuid="hcc5e94e1g37f8g4d07ga25dg017fe94fe2dc">&lt;font color=&apos;#00FF00&apos;&gt;Animal Language Learned&lt;/font&gt;</content>
+	<content contentuid="hd14e2a61gad38g4956gacb4g86387ad52b79">Share Persuasion in Dialog</content>
 	<content contentuid="hd20d1fddgc7f2g4ac2g859fgd9ff42f39b5d">Bartering Tweaks Settings</content>
+	<content contentuid="hd5dbfed3g2477g45c5g8269g9ebef19142e3">Disable Pet Pal Tag Mode</content>
+	<content contentuid="hd794eed9gfac5g41bbg95c5g16c0136f02e5">Disable Barter Sharing</content>
+	<content contentuid="hd7cf97acg7dbdg4212g9965g1db9e669ff8b">Disable Sneaking Tweaks for User</content>
 	<content contentuid="hd88d86dagdb35g4462g8d47gb01a77b1d15c">Features</content>
 	<content contentuid="hd8a70d0agf2bfg444ag99b8g0ef731f11f6f">Commands</content>
 	<content contentuid="hdf5ecbfag5b14g4a92g8c01g7fce4cc1caa6">Enable Bartering Sharing</content>

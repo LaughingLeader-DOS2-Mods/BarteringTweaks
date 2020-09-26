@@ -11,7 +11,7 @@ if Ext.IsModLoaded("7e737d2f-31d2-4751-963f-be6ccc59cd0c") then
 		---@type ModSettings
 		local ModSettings = Classes.ModSettingsClasses.ModSettings
 		settings = ModSettings:Create("27db95b3-6850-48c5-baec-3a1f2df9a825")
-		settings.Global:AddFlags({
+		settings.Global:AddLocalizedFlags({
 			"LLBARTER_BarterSharingDisabled",
 			"LLBARTER_PersuasionDialogSharingEnabled",
 			"LLBARTER_AttitudeSharingEnabled",
@@ -19,7 +19,7 @@ if Ext.IsModLoaded("7e737d2f-31d2-4751-963f-be6ccc59cd0c") then
 			"LLBARTER_SneakingTweaksEnabled",
 			"LLBARTER_PreventTraderBooksEnabled",
 		})
-		settings.Global:AddFlag("LLBARTER_SneakingTweaksDisabled", "User", false)
+		settings.Global:AddLocalizedFlag("LLBARTER_SneakingTweaksDisabled", "User", false)
 		LeaderLib.SettingsManager.AddSettings(settings)
 	end)
 end

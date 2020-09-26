@@ -1,0 +1,15 @@
+Key	Content	Handle
+LLBARTER_BarterSharingDisabled	Disable Barter Sharing	hd794eed9gfac5g41bbg95c5g16c0136f02e5
+LLBARTER_BarterSharingDisabled_Description	Disable automatically sharing the Barter civil ability with the party.	h95f5c196g2f27g4dc1gaf19g41f957d155fc
+LLBARTER_PersuasionDialogSharingEnabled	Share Persuasion in Dialog	hd14e2a61gad38g4956gacb4g86387ad52b79
+LLBARTER_PersuasionDialogSharingEnabled_Description	Automatically share persuasion when dialog starts.	hc9d44b25g6b66g4da3g9627gc1c12fc5efa2
+LLBARTER_AttitudeSharingEnabled	Share Attitude Bonuses	haee696e5g735ag4757g8365g54b435c5ef71
+LLBARTER_AttitudeSharingEnabled_Description	Share attitude gains between all party members.	h97034417gbc24g4ecdgb850gcd2286656a4f
+LLBARTER_PetPalTagModeDisabled	Disable Pet Pal Tag Mode	hd5dbfed3g2477g45c5g8269g9ebef19142e3
+LLBARTER_PetPalTagModeDisabled_Description	The Pet Pal book will add Pet Pal tag instead of the actual talent, unless this is disabled. If disabled, the talent will be added instead.	h4ae9bdfdgc4c3g4bf6gad29g96762eee9e20
+LLBARTER_SneakingTweaksEnabled	Enable Sneaking Tweaks	h73352d34g8b96g43d5ga66bgbc2e1905b849
+LLBARTER_SneakingTweaksEnabled_Description	If enabled, users can enable one-click sneaking for chained party members, allowing you to sneak/unsneak all connected characters with a single action.	h8262bcb9g879eg4194g9445g2aced28eba05
+LLBARTER_SneakingTweaksDisabled	Disable Sneaking Tweaks for User	hd7cf97acg7dbdg4212g9965g1db9e669ff8b
+LLBARTER_SneakingTweaksDisabled_Description	If Sneaking Tweaks is globally enabled, this will disable it for all characters you control.	h392d6343g7cf5g48ecg8496gcbad8b652d4e
+LLBARTER_PreventTraderBooksEnabled	Prevent Bartering Tweaks Books	h6e27d963g5443g4653g90abgb7faff42a272
+LLBARTER_PreventTraderBooksEnabled_Description	Prevent Bartering Tweaks books from appearing in traders.	hb68ac019g21e6g4488g92c6gc00942d719c1
