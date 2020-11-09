@@ -2,13 +2,19 @@ Ext.Require("Shared.lua")
 
 function SetSneakingTweaksDisabled(id)
 	if Settings ~= nil then
-		Settings.Global.Flags.LLBARTER_SneakingTweaksDisabled.Targets[id] = true
+		local flag = Settings.Global.Flags.LLBARTER_SneakingTweaksDisabled
+		if flag ~= nil then
+			flag:AddTarget(id, true)
+		end
 	end
 end
 
 function SetSneakingTweaksEnabled(id)
 	if Settings ~= nil then
-		Settings.Global.Flags.LLBARTER_SneakingTweaksDisabled.Targets[id] = nil
+		local flag = Settings.Global.Flags.LLBARTER_SneakingTweaksDisabled
+		if flag ~= nil then
+			flag:RemoveTarget(id)
+		end
 	end
 end
 

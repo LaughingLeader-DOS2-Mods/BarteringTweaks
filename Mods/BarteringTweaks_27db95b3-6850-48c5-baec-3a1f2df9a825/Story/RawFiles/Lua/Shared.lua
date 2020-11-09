@@ -10,36 +10,11 @@ end)
 
 ---@type ModSettings
 Settings = nil
--- LeaderLib
-if Ext.IsModLoaded("7e737d2f-31d2-4751-963f-be6ccc59cd0c") then
-	Ext.RegisterListener("SessionLoaded", function()
-		local LeaderLib = Mods.LeaderLib
-		local Classes = LeaderLib.Classes
-	
+
+Ext.RegisterListener("SessionLoaded", function()
+	-- LeaderLib
+	if Ext.IsModLoaded("7e737d2f-31d2-4751-963f-be6ccc59cd0c") then
 		---@type ModSettings
 		Settings = Mods.LeaderLib.CreateModSettings("27db95b3-6850-48c5-baec-3a1f2df9a825")
-		Settings.Global:AddLocalizedFlags({
-			"LLBARTER_BarterSharingDisabled",
-			"LLBARTER_PersuasionDialogSharingEnabled",
-			"LLBARTER_AttitudeSharingEnabled",
-			"LLBARTER_PetPalTagModeDisabled",
-			"LLBARTER_SneakingTweaksEnabled",
-			"LLBARTER_PreventTraderBooksEnabled",
-		})
-		Settings.Global:AddLocalizedFlag("LLBARTER_SneakingTweaksDisabled", "User", false)
-
-		Settings.GetMenuOrder = function()
-			return {{
-				Entries = {
-					"LLBARTER_BarterSharingDisabled",
-					"LLBARTER_PersuasionDialogSharingEnabled",
-					"LLBARTER_AttitudeSharingEnabled",
-					"LLBARTER_PreventTraderBooksEnabled",
-					"LLBARTER_PetPalTagModeDisabled",
-					"LLBARTER_SneakingTweaksEnabled",
-					"LLBARTER_SneakingTweaksDisabled",
-				}
-			}}
-		end
-	end)
-end
+	end
+end)

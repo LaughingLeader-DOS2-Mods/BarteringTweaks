@@ -1,0 +1,36 @@
+{
+	"Data": {
+		"Flags": [
+			{
+				"Type" : "Global",
+				"Entries" : [
+					"LLBARTER_BarterSharingDisabled",
+					"LLBARTER_PersuasionDialogSharingEnabled",
+					"LLBARTER_AttitudeSharingEnabled",
+					"LLBARTER_PetPalTagModeDisabled",
+					"LLBARTER_SneakingTweaksEnabled",
+					"LLBARTER_PreventTraderBooksEnabled"
+				]
+			}
+		]
+	},
+	"MenuOrder": [
+		{
+			"Name" : "LLBARTER_SettingsMenu_Section_Sharing",
+			"Entries" : [
+				"LLBARTER_BarterSharingDisabled",
+				"LLBARTER_PersuasionDialogSharingEnabled",
+				"LLBARTER_AttitudeSharingEnabled"
+			]
+		},
+		{
+			"Name" : "LLBARTER_SettingsMenu_Section_Misc",
+			"Entries" : [
+				"LLBARTER_PreventTraderBooksEnabled",
+				"LLBARTER_PetPalTagModeDisabled",
+				"LLBARTER_SneakingTweaksEnabled",
+				"LLBARTER_SneakingTweaksDisabled"
+			]
+		}
+	]
+}
